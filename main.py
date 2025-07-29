@@ -7,7 +7,7 @@ from attendance_tool.processor import Processor
 
 def main():
     proccesor = Processor("input.csv")
-    print(proccesor)
+    proccesor.validate()
 
 
 if __name__ == "__main__":
