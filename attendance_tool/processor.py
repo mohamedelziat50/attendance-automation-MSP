@@ -19,7 +19,7 @@ class Processor:
             raise FileNotFoundError(f"The file '{file_path}' does not exist.")
         self._file_path = file_path
 
-    # Allow the proccesor to be printed immediatly
+    # Allow the proccesor to be printed immediatly if needed
     def __str__(self):
         """
         Handles medium files (500-5,000 rows) perfectly fine for our use case
@@ -48,20 +48,22 @@ class Processor:
             with open(self.file_path) as file:
                 reader = csv.DictReader(file)
 
+                valid_rows = []
                 invalid_rows = []
                 for row in reader:
                     try:
                         self.validate_name(row["Full Name"])
                         self.validate_email(row["University Email"])
                         self.validate_university_id(row["University ID"])
+                        self.validate_course_code(row["Course Code"])
+                        valid_rows.append(row)
                     except (ValueError, validators.ValidationError) as error:
                         # Capture the error message
                         row["error"] = str(error)  # Add error message to the row
                         invalid_rows.append(row)
 
-                print("=========Not successful=============")
-                for row in invalid_rows:
-                    print(row, end="\n\n")
+                # Return a tuple of dictionaries
+                return (valid_rows, invalid_rows)
 
         except FileNotFoundError:
             raise FileNotFoundError(f"Unable to open file: {self.file_path}")
@@ -153,4 +155,35 @@ class Processor:
         if not number_part.isdigit() or len(number_part) != 5:
             raise ValueError("Student number must be exactly 5 digits")
 
+        # No return needed - function succeeds if no exception is raised
+
+    def validate_course_code(self, course_code):
+        """
+        Validates MIU course code.
+        Format: At least 3 letters + at least 3 numbers + optional additional characters
+        Examples: SWE11004, CSC101, MRK10105-BUS, ETH10104-CSC, BAS13104 Lecture, BAS13104 Tutorial
+        Raises ValueError if invalid.
+        """
+        if not course_code or not isinstance(course_code, str):
+            raise ValueError("Course code must be a non-empty string")
+        
+        # Remove extra whitespace and convert to uppercase for consistency
+        course_code = course_code.strip().upper()
+        
+        # Check minimum length (3 letters + 3 numbers = 6 characters minimum)
+        if len(course_code) < 6:
+            raise ValueError("Course code must be at least 6 characters long")
+        
+        # Check maximum reasonable length
+        if len(course_code) > 25:
+            raise ValueError("Course code must be less than 25 characters")
+        
+        # Atleast 3 letters, then at least 3 digits, then optional alphanumeric/spaces/hyphens
+        if not re.match(r"^[A-Z]{3,}[0-9]{3,}[A-Z0-9\s\-]*$", course_code):
+            raise ValueError(
+                "Course code must start with at least 3 letters, "
+                "followed by at least 3 numbers, "
+                "and optionally more letters/numbers/spaces/hyphens"
+            )
+        
         # No return needed - function succeeds if no exception is raised
