@@ -2,7 +2,7 @@
 ...
 
 # Our own package related, Syntax: from package.module import class/function
-from attendance_tool.Processor import Processor
+from attendance_tool.processor import Processor
 
 
 def main():
