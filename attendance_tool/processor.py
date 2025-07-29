@@ -53,6 +53,7 @@ class Processor:
                     try:
                         self.validate_name(row["Full Name"])
                         self.validate_email(row["University Email"])
+                        self.validate_university_id(row["University ID"])
                     except (ValueError, validators.ValidationError) as error:
                         # Capture the error message
                         row["error"] = str(error)  # Add error message to the row
@@ -103,8 +104,10 @@ class Processor:
         if not email or not isinstance(email, str):
             raise ValueError("Email must be a non-empty string")
 
+        # Remove extra whitespace
         email = email.strip()
 
+        # Check if it's an actual email using 3rd party library
         if not validators.email(email):
             raise ValueError(f"Invalid email format: {email}")
 
@@ -114,5 +117,40 @@ class Processor:
             raise ValueError(
                 f"Email must be from {required_domain} domain, got: {email}"
             )
+
+        # No return needed - function succeeds if no exception is raised
+
+    def validate_university_id(self, student_id):
+        """
+        Validates MIU student ID.
+        Example: 2023/00824
+        Format: YYYY/XXXXX (4-digit year / 5-digit number)
+        Raises ValueError if invalid.
+        """
+        if not student_id or not isinstance(student_id, str):
+            raise ValueError("Student ID must be a non-empty string")
+
+        # Remove extra whitespace
+        student_id = student_id.strip()
+
+        # Check if it contains exactly one forward slash
+        if student_id.count("/") != 1:
+            raise ValueError("Student ID must contain exactly one '/' separator")
+
+        # Split by forward slash
+        year_part, number_part = student_id.split("/")
+
+        # Validate year part (4 digits)
+        if not year_part.isdigit() or len(year_part) != 4:
+            raise ValueError("Year part must be exactly 4 digits")
+
+        # Check if year is reasonable (assuming students from 2010-2050)
+        year = int(year_part)
+        if year < 2010 or year > 2050:
+            raise ValueError(f"Year must be between 2010-2050, got: {year}")
+
+        # Validate number part (5 digits)
+        if not number_part.isdigit() or len(number_part) != 5:
+            raise ValueError("Student number must be exactly 5 digits")
 
         # No return needed - function succeeds if no exception is raised
