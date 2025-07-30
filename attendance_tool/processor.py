@@ -61,6 +61,7 @@ class Processor:
                         self.validate_university_id(row["University ID"])
                         self.validate_course_code(row["Course Code"])
                         self.validate_course_time(row["Course Time"])
+                        self.validate_dr_ta_name(row["Doctor/TA Name"])
                         valid_rows.append(row)
                     except (ValueError, validators.ValidationError) as error:
                         # Capture the error message
@@ -90,7 +91,8 @@ class Processor:
             "University Email", 
             "University ID",
             "Course Code",
-            "Course Time"
+            "Course Time",
+            "Doctor/TA Name"
         ]
         
         # Check each required column one by one
@@ -300,3 +302,35 @@ class Processor:
         """
         if not (0 <= minutes <= 59):
             raise ValueError(f"Minutes must be between 0-59, got: {minutes}")
+
+    def validate_dr_ta_name(self, name):
+        """
+        Validates Doctor/TA name.
+        Similar functionality to validate_name but allows for titles like "Dr." and "TA".
+        Raises ValueError if invalid, returns nothing if valid.
+        Regular Expressions Used
+        """
+        if not name or not isinstance(name, str):
+            raise ValueError("Doctor/TA name must be a non-empty string")
+
+        # Remove extra whitespace
+        name = name.strip()
+
+        if len(name) < 2:
+            raise ValueError("Doctor/TA name must be at least 2 characters long")
+
+        if len(name) > 60:
+            raise ValueError("Doctor/TA name must be less than 60 characters")
+
+        # Check for valid characters (letters, spaces, hyphens, apostrophes, periods for titles)
+        if not re.match(r"^[a-zA-Z\s'.-]+$", name):
+            raise ValueError(
+                "Doctor/TA name can only contain letters, spaces, hyphens, apostrophes, and periods"
+            )
+
+        # Check for reasonable number of words (1-6 to allow for titles like "Dr. John Smith")
+        words = name.split()
+        if len(words) < 1 or len(words) > 6:
+            raise ValueError("Doctor/TA name should contain 1-6 words")
+
+        # No return needed - function succeeds if no exception is raised
