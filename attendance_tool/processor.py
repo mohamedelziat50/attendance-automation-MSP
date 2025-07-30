@@ -15,8 +15,12 @@ class Processor:
     # Setter
     @file_path.setter
     def file_path(self, file_path):
+        # Check if file exists first
         if not os.path.exists(file_path):
             raise FileNotFoundError(f"The file '{file_path}' does not exist.")
+        # Then check it's a csv file
+        if not file_path.endswith(".csv"):
+            raise ValueError(f"The file '{file_path}' is not a .csv file")
         self._file_path = file_path
 
     # Allow the proccesor to be printed immediatly if needed
@@ -43,6 +47,8 @@ class Processor:
     def validate(self):
         """
         Validates an entire CSV file's rows
+        Raises FileNotFoundError: If unable to open file
+        Raises ValueError: If CSV's Headers are not valid
         """
         try:
             with open(self.file_path) as file:
@@ -306,7 +312,7 @@ class Processor:
     def validate_dr_ta_name(self, name):
         """
         Validates Doctor/TA name.
-        Similar functionality to validate_name but allows for titles like "Dr." and "TA".
+        Similar functionality to validate_name but allows for titles like "Dr.", "TA", and "Prof.".
         Raises ValueError if invalid, returns nothing if valid.
         Regular Expressions Used
         """
