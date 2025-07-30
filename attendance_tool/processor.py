@@ -53,7 +53,7 @@ class Processor:
         try:
             with open(self.file_path) as file:
                 reader = csv.DictReader(file)
-                
+
                 # Validate CSV structure first - To Avoid KeyError
                 print("Field Names:", reader.fieldnames)
                 self.validate_csv_headers(reader.fieldnames)
@@ -85,28 +85,28 @@ class Processor:
     def validate_csv_headers(self, fieldnames):
         """
         Validates CSV headers/columns exist.
-            
+
         Raises ValueError: If any required column is missing or if headers are empty
         """
         if not fieldnames:
             raise ValueError("CSV file has no headers/columns")
-        
+
         # All required columns that must be present
         required_columns = [
             "Full Name",
-            "University Email", 
+            "University Email",
             "University ID",
             "Course Code",
             "Course Time",
-            "Doctor/TA Name"
+            "Doctor/TA Name",
         ]
-        
+
         # Check each required column one by one
         for column in required_columns:
             if column not in fieldnames:
                 raise ValueError(f"Missing required column: {column}")
-        
-        # Check for None or empty headers  
+
+        # Check for None or empty headers
         # enumerate(fieldnames) gives us both the index and the value
         for i, header in enumerate(fieldnames):
             if not header or header.strip() == "":
@@ -248,7 +248,7 @@ class Processor:
             raise ValueError("Course time must be a non-empty string")
 
         course_time = course_time.strip()
-        
+
         # Check for reasonable length
         if len(course_time) > 25:
             raise ValueError("Course time is too long")
@@ -259,7 +259,7 @@ class Processor:
         Regular Expression Explaination
         ([1-9]|1[0-2]) - Matches hours 1-12 (12-hour format), Utilizing OR
         (:[0-5][0-9])? - Optionally (with ?) matches :00 through :59
-        \s+ - Matches one or more spaces
+        \\s+ - Matches one or more spaces
         (-|to) -  Matches either "-" or "to"
         """
         match = re.match(
@@ -267,14 +267,14 @@ class Processor:
             course_time,
         )
         if not match:
-            raise ValueError(
-                "Course time has an invalid format"
-            )
+            raise ValueError("Course time has an invalid format")
 
         # Extract parts
         start_hour = int(match.group(1))
         start_minutes = match.group(2)  # Could be None or ":MM"
-        separator = match.group(3)  # "-" or "to", No need to be validated since regex handles it
+        separator = match.group(
+            3
+        )  # "-" or "to", No need to be validated since regex handles it
         end_hour = int(match.group(4))
         end_minutes = match.group(5)  # Could be None or ":MM"
 
@@ -303,7 +303,7 @@ class Processor:
     def validate_minutes(self, minutes):
         """
         Validates minutes between 0-59.
-            
+
         Raises ValueError: If minutes is not between 0-59
         """
         if not (0 <= minutes <= 59):

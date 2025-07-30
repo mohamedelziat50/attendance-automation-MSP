@@ -19,26 +19,34 @@ def main():
     group = parser.add_mutually_exclusive_group()
 
     # --word argument
-    group.add_argument("--word", action="store_true", help="Exports .csv file to .docx document immediately")
-    
+    group.add_argument(
+        "--word",
+        action="store_true",
+        help="Exports .csv file to .docx document immediately",
+    )
+
     # --pdf argument
-    group.add_argument("--pdf", action="store_true", help="Exports .csv file to .pdf document immediately")
+    group.add_argument(
+        "--pdf",
+        action="store_true",
+        help="Exports .csv file to .pdf document immediately",
+    )
 
     # Parse Arguments
     args = parser.parse_args()
 
     # Get the CSV file path from arguments
     csv_file_path = args.csv_file
-    
+
     try:
         # Create processor with the provided CSV file
         processor = Processor(csv_file_path)
         valid_rows, invalid_rows = processor.validate()
-        
+
         print(f"Processing file: {csv_file_path}")
         print(f"Valid rows: {len(valid_rows)}")
         print(f"Invalid rows: {len(invalid_rows)}")
-        
+
         # Handle Arguments
         if args.word:
             print("Exporting to Word document...")
@@ -52,7 +60,7 @@ def main():
             print("Launching GUI...")
             # TODO: Implement GUI functionality
             ...
-            
+
     except FileNotFoundError as error:
         print(f"Error: {error}")
     except ValueError as error:
