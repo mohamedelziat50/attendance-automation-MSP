@@ -44,7 +44,7 @@ class Processor:
         except FileNotFoundError:
             raise FileNotFoundError(f"Unable to open file: {self.file_path}")
 
-    def validate(self):
+    def process(self):
         """
         Validates an entire CSV file's rows
         Raises FileNotFoundError: If unable to open file

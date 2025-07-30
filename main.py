@@ -12,7 +12,7 @@ def main():
     # Usage: output incase invalid command used
     parser.usage = "python main.py file.csv [--word | --pdf]"
 
-    # Add positional argument for the CSV file (required as the first argument)
+    # Add Positional argument (do not start with - or --): required by default; no need for required=True
     parser.add_argument("csv_file", help="Path to the CSV file to process")
 
     # Create a group to run either --word, --pdf, or no arguments at once
@@ -41,11 +41,17 @@ def main():
     try:
         # Create processor with the provided CSV file
         processor = Processor(csv_file_path)
-        valid_rows, invalid_rows = processor.validate()
+        valid_rows, invalid_rows = processor.process()
 
         print(f"Processing file: {csv_file_path}")
-        print(f"Valid rows: {len(valid_rows)}")
-        print(f"Invalid rows: {len(invalid_rows)}")
+        # print(f"Valid rows: {(valid_rows)}")
+        # print(f"Invalid rows: {(invalid_rows)}")
+        print("=======VALID=========")
+        for row in valid_rows:
+            print(row, end="\n\n")
+        print("=======INVALID=========")
+        for row in invalid_rows:
+            print(row, end="\n\n")
 
         # Handle Arguments
         if args.word:
