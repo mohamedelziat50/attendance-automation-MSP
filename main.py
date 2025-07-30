@@ -3,6 +3,7 @@ import argparse
 
 # Our own package related, Syntax: from package.module import class/function
 from attendance_tool.processor import Processor
+from attendance_tool.exporter import Exporter
 
 
 def main():
@@ -14,6 +15,10 @@ def main():
 
     # Add Positional argument (do not start with - or --): required by default; no need for required=True
     parser.add_argument("csv_file", help="Path to the CSV file to process")
+
+    # TODO: Add Title Argument which is not required for GUI, but is for word & pdf
+    # Example: python main.py input.csv --word "Monday 5/5/2025"
+    # Or Example: python main.py input.csv --word --title "Monday 5/5/2025"
 
     # Create a group to run either --word, --pdf, or no arguments at once
     group = parser.add_mutually_exclusive_group()
@@ -53,11 +58,13 @@ def main():
         for row in invalid_rows:
             print(row, end="\n\n")
 
+        # Intialize the exporter
+        exporter = Exporter(valid_rows, invalid_rows, title="Monday 5/5/2025")
+
         # Handle Arguments
         if args.word:
             print("Exporting to Word document...")
-            # TODO: Implement Word export functionality
-            ...
+            exporter.export_word()
         elif args.pdf:
             print("Exporting to PDF document...")
             # TODO: Implement PDF export functionality
@@ -71,6 +78,8 @@ def main():
         print(f"Error: {error}")
     except ValueError as error:
         print(f"Validation Error: {error}")
+    except PermissionError as error:
+            print(f"Error saving document: {error}")
     except Exception as error:
         print(f"Unexpected error: {error}")
 
