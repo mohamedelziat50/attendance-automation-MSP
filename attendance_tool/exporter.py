@@ -81,10 +81,10 @@ class Exporter:
         table = self.__create_attendance_table(document)
 
         # Add valid data rows
-        self.__add_valid_data_rows(table)
+        self.__add_data_rows(table)
 
         # Add invalid data rows (highlighted in red)
-        self.__add_invalid_data_rows(table)
+        self.__add_data_rows(table, False)
 
         # Add error log section if there are invalid rows
         if self.invalid_rows:
@@ -116,37 +116,6 @@ class Exporter:
         heading_run.font.name = "Arial"  # Change font family to Arial
         heading_run.font.size = docx.shared.Pt(21)  # Set font size to 21 points
         heading_run.font.color.rgb = docx.shared.RGBColor(0, 0, 0)  # Set text color to black
-
-    def __generate_filename(self):
-        """
-        Helper function to generate a unique filename based on title and current timestamp.
-        Example: {title}_{date}_{hr&min&sec}.docx
-        Returns: str: A unique filename for the Word document
-        """
-        # Clean title - replace spaces with underscores
-        clean_title = self.title.replace(" ", "_")
-        
-        # Remove any remaining problematic characters
-        safe_characters = []
-        for char in clean_title:
-            if char.isalnum() or char == "_":
-                safe_characters.append(char)
-            else:
-                safe_characters.append("_")
-        
-        clean_title = "".join(safe_characters).strip("_")
-        
-        # Simple timestamp
-        now = datetime.now()
-        timestamp = f"{now.year}{now.month:02d}{now.day:02d}_{now.hour:02d}{now.minute:02d}{now.second:02d}"
-        
-        # Create filename
-        # filename = f"{clean_title}_{timestamp}.docx"
-
-        # Use when testing, and uncomment above.
-        filename = f"demo.docx"
-        
-        return filename
 
     def __create_attendance_table(self, document):
         """
@@ -193,13 +162,15 @@ class Exporter:
             
         return table
 
-    def __add_valid_data_rows(self, table):
+    def __add_data_rows(self, table, valid=True):
         """
-        Helper function to add valid data rows to the attendance table.
-        
+        Helper function to add data rows to the attendance table.
+
         ARG table: The table object to add rows to
+        ARG valid: True for valid rows, False for invalid rows
         """
-        for row in self.valid_rows:
+        # Choose which data to process based on valid parameter - Pythonic Ternary Operator!
+        for row in (self.valid_rows if valid else self.invalid_rows):
             cells = table.add_row().cells
             cells[0].text = row["Full Name"]
             cells[1].text = row["University ID"]
@@ -210,37 +181,15 @@ class Exporter:
             # Set margins for data cells
             self.__set_cell_margins(cells)
             
-            # Format valid row text
+            # Format row text
             for cell in cells:
                 for paragraph in cell.paragraphs:
                     for run in paragraph.runs:
                         run.font.size = docx.shared.Pt(11.5)
                         run.font.name = 'Roboto'
-
-    def __add_invalid_data_rows(self, table):
-        """
-        Helper function to add invalid data rows to the attendance table (highlighted in red).
-        
-        ARG table: The table object to add rows to
-        """
-        for row in self.invalid_rows:
-            cells = table.add_row().cells
-            cells[0].text = row["Full Name"]
-            cells[1].text = row["University ID"]
-            cells[2].text = row["Course Code"]
-            cells[3].text = row["Course Time"]
-            cells[4].text = row["Doctor/TA Name"]
-            
-            # Set margins for invalid data cells
-            self.__set_cell_margins(cells)
-            
-            # Highlight invalid row text in red
-            for cell in cells:
-                for paragraph in cell.paragraphs:
-                    for run in paragraph.runs:
-                        run.font.color.rgb = docx.shared.RGBColor(255, 0, 0)  # Red color
-                        run.font.size = docx.shared.Pt(11.5)
-                        run.font.name = 'Roboto'
+                        # Make invalid rows red
+                        if not valid:
+                            run.font.color.rgb = docx.shared.RGBColor(255, 0, 0)
 
     def __set_cell_margins(self, cells):
         """
@@ -334,3 +283,34 @@ class Exporter:
                 error_msg_run.font.name = 'Roboto'
                 error_msg_run.font.size = docx.shared.Pt(11)
                 error_msg_run.font.color.rgb = docx.shared.RGBColor(128, 128, 128)  # Gray color
+
+    def __generate_filename(self):
+        """
+        Helper function to generate a unique filename based on title and current timestamp.
+        Example: {title}_{date}_{hr&min&sec}.docx
+        Returns: str: A unique filename for the Word document
+        """
+        # Clean title - replace spaces with underscores
+        clean_title = self.title.replace(" ", "_")
+        
+        # Remove any remaining problematic characters
+        safe_characters = []
+        for char in clean_title:
+            if char.isalnum() or char == "_":
+                safe_characters.append(char)
+            else:
+                safe_characters.append("_")
+        
+        clean_title = "".join(safe_characters).strip("_")
+        
+        # Simple timestamp
+        now = datetime.now()
+        timestamp = f"{now.year}{now.month:02d}{now.day:02d}_{now.hour:02d}{now.minute:02d}{now.second:02d}"
+        
+        # Create filename
+        # filename = f"{clean_title}_{timestamp}.docx"
+
+        # Use when testing, and uncomment above.
+        filename = f"demo.docx"
+        
+        return filename
