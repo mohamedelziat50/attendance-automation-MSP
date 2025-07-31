@@ -161,6 +161,10 @@ class Exporter:
                         run.font.size = docx.shared.Pt(11.5)
                         run.font.name = 'Roboto'
 
+        # Add error log section if there are invalid rows
+        if self.invalid_rows:
+            self.__add_error_log(document)
+
         try:
             # Rename this title later to self.title or smth similiar
             document.save("demo.docx")
@@ -211,3 +215,52 @@ class Exporter:
                                        f'<w:insideV w:val="single" w:sz="4" w:space="0" w:color="{color}"/>'
                                        f'</w:tblBorders>')
         tblPr.append(tblBorders)
+
+    def __add_error_log(self, document):
+        """
+        Helper function to add validation error log section to the document.
+        
+        ARG document: The Word document to add the error log to
+        """
+        # Add some space before the log
+        document.add_paragraph()
+        
+        # Add log heading
+        log_heading = document.add_paragraph()
+        log_heading_run = log_heading.add_run("Validation Issues Log:")
+        log_heading_run.font.bold = True
+        log_heading_run.font.size = docx.shared.Pt(14)
+        log_heading_run.font.name = 'Roboto'
+        log_heading_run.font.color.rgb = docx.shared.RGBColor(255, 0, 0)  # Red color
+        
+        # Add each error as a separate paragraph
+        for i, row in enumerate(self.invalid_rows, 1):
+            if "error" in row and row["error"]:
+                error_paragraph = document.add_paragraph()
+                
+                # Add error number (invalid_row index + 1)
+                error_run = error_paragraph.add_run(f"{i}. ")
+                error_run.font.bold = True
+                error_run.font.name = 'Roboto'
+                error_run.font.size = docx.shared.Pt(11)
+                
+                # Add student identifier (name or ID)
+                student_name = row["Full Name"]
+                if not student_name.strip():
+                    # Default value 'Unknown'
+                    if row["University ID"]:
+                        student_name = f"Student with ID: {row["University ID"]}"
+                    else:
+                        student_name = f"Unknown Student"
+                
+                # Student - 
+                name_run = error_paragraph.add_run(f"{student_name} - ")
+                name_run.font.bold = True
+                name_run.font.name = 'Roboto'
+                name_run.font.size = docx.shared.Pt(11)
+                
+                # Add error message
+                error_msg_run = error_paragraph.add_run(row["error"])
+                error_msg_run.font.name = 'Roboto'
+                error_msg_run.font.size = docx.shared.Pt(11)
+                error_msg_run.font.color.rgb = docx.shared.RGBColor(128, 128, 128)  # Gray color
