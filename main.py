@@ -7,69 +7,28 @@ from attendance_tool.exporter import Exporter
 
 
 def main():
-    # 3rd Party Library to handle different cmd arguments
-    parser = argparse.ArgumentParser(allow_abbrev=False)
+    # Intialize argument parser with custom argument settings
+    parser = initialize_parser()
 
-    # Usage: output incase invalid command used
-    parser.usage = 'python main.py [file.csv (--word | --pdf) --title "Title"]'
-
-    # Add optional positional argument for CSV file, nargs=? means it's either provided
-    # or not provided, which allows for 2 different modes (GUI & cmd run)
-    parser.add_argument("csv_file", nargs="?", help="Path to the CSV file to process")
-
-    # Create a group to run either --word or --pdf one at time
-    group = parser.add_mutually_exclusive_group()
-
-    # --word argument
-    group.add_argument(
-        "--word",
-        action="store_true",
-        help="Exports .csv file to .docx document immediately",
-    )
-
-    # --pdf argument
-    group.add_argument(
-        "--pdf",
-        action="store_true",
-        help="Exports .csv file to .pdf document immediately",
-    )
-
-    # --title argument for Word/PDF documents
-    parser.add_argument(
-        "--title",
-        type=str,
-        help="Title for the Word/PDF document (e.g., 'Monday 5/5/2025')",
-    )
-
-    # Parse Arguments
+    # Parse / Read Arguments
     args = parser.parse_args()
 
-    # Handle GUI mode (no arguments)
-    if not args.csv_file:
-        # If no CSV file but other arguments provided, it's an error
-        if args.title or args.word or args.pdf:
-            parser.error("CSV file is required when using --title, --word, or --pdf")
+    # Validate arguments and determine mode
+    mode = validate_arguments(parser, args)
+
+    # GUI Mode:
+    if mode == "gui":
         print("Launching GUI...")
         # TODO: Implement GUI functionality
         return
 
-    # Validate that all required arguments are provided for export mode
-    if not args.word and not args.pdf:
-        parser.error("Either --word or --pdf is required when providing a CSV file")
-    if not args.title:
-        parser.error("--title is required when providing a CSV file")
-
-    # Get the CSV file path from arguments
-    csv_file_path = args.csv_file
-
+    # Export Mode:
     try:
         # Create processor with the provided CSV file
-        processor = Processor(csv_file_path)
+        processor = Processor(args.csv_file)
         valid_rows, invalid_rows = processor.process()
 
-        print(f"Processing file: {csv_file_path}")
-        # print(f"Valid rows: {(valid_rows)}")
-        # print(f"Invalid rows: {(invalid_rows)}")
+        print(f"Processing file: {processor.file_path}")
         print("=======VALID=========")
         for row in valid_rows:
             print(row, end="\n\n")
@@ -97,6 +56,68 @@ def main():
         print(f"Error saving document: {error}")
     except Exception as error:
         print(f"Unexpected error: {error}")
+
+
+def initialize_parser():
+    """Configures a customised command line argument parser."""
+
+    # 3rd Party Library to handle different cmd arguments
+    parser = argparse.ArgumentParser(allow_abbrev=False)
+
+    # Usage: output incase invalid command used
+    parser.usage = 'python main.py [file.csv (--word | --pdf) --title "Title"]'
+
+    # Add optional positional argument (no --) for CSV file, nargs=? means it's either provided
+    # or not provided as the 1st argument, which allows for 2 different modes (GUI & CMD Modes)
+    parser.add_argument("csv_file", nargs="?", help="Path to the CSV file to process")
+
+    # Create a group to run either --word or --pdf one at time
+    group = parser.add_mutually_exclusive_group()
+
+    # --word argument
+    group.add_argument(
+        "--word",
+        action="store_true", # No value required after the flag (True Or False whether provided)
+        help="Exports .csv file to .docx document immediately",
+    )
+
+    # --pdf argument
+    group.add_argument(
+        "--pdf",
+        action="store_true", # No value required after the flag (True Or False whether provided)
+        help="Exports .csv file to .pdf document immediately",
+    )
+
+    # --title argument for Word/PDF documents
+    parser.add_argument(
+        "--title", # Value required after the flag
+        type=str,
+        help="Title for the Word/PDF document (e.g., 'Monday 5/5/2025')",
+    )
+
+    return parser
+
+
+def validate_arguments(parser, args):
+    """Validate the parsed command line arguments and return mode."""
+
+    # Handle GUI mode (no arguments)
+    if not args.csv_file:
+        # If no CSV file but other arguments provided, it's an error
+        if args.title or args.word or args.pdf:
+            parser.error("CSV file is required when using --title, --word, or --pdf")
+        # If no arguments are provided, then launch the GUI
+        return "gui"
+
+    # If we reached this point then csv_file is provided
+    # Validate that --word or --pdf AND --title are provided for export mode
+    if not args.word and not args.pdf:
+        parser.error("Either --word or --pdf is required when providing a CSV file")
+    if not args.title:
+        parser.error("--title is required when providing a CSV file")
+
+    # If no arguments are provided, then export mode
+    return "export"
 
 
 if __name__ == "__main__":
