@@ -47,15 +47,17 @@ def main():
             print("File Name:", filename)
         elif args.pdf:
             print("Exporting to PDF document...")
-            # TODO: Implement PDF export functionality
-            ...
+            filename = exporter.export_pdf()
+            print("File Name:", filename)
 
     except FileNotFoundError as error:
-        print(f"Error: {error}")
+        print(f"FileNotFoundError: {error}")
     except ValueError as error:
-        print(f"Validation Error: {error}")
+        print(f"ValueError: {error}")
     except PermissionError as error:
-        print(f"Error saving document: {error}")
+        print(f"Permission Error: {error}")
+    except OSError as error:
+        print(f"System Error: {error}")
     except Exception as error:
         print(f"Unexpected error: {error}")
 

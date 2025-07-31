@@ -1,5 +1,6 @@
-import docx, docx.shared, docx.oxml
+import docx, docx.shared, docx.oxml, os
 from datetime import datetime
+from docx2pdf import convert
 
 
 class Exporter:
@@ -99,7 +100,58 @@ class Exporter:
         except PermissionError as error:
             # Raised possibly because file is open, and we're trying to save it
             raise PermissionError(error)
+
+    def export_pdf(self):
+        """
+        Export the valid and invalid attendance rows to a PDF document.
+        The temporary Word document is automatically deleted after conversion.
+
+        Returns: str: The file path of the generated PDF document
+
+        Raises: 
+            PermissionError: If the Word document cannot be created or saved before converting to PDF
+            FileNotFoundError: If Word document creation fails or file not found for conversion
+            OSError: If OS-level errors occur during conversion
+            Exception: If any other error occurs during Word creation or PDF conversion
+        """
+        # First create the Word document
+        try:
+            word_filename = self.export_word()
+        except PermissionError as error:
+            raise PermissionError(f"Failed to create Word document for PDF conversion: {error}")
+        except Exception as error:
+            raise Exception(f"Error creating Word document for PDF conversion: {error}")
         
+        # Convert .docx to .pdf (replace extension)
+        pdf_filename = word_filename.replace('.docx', '.pdf')
+        try:
+            # Utilize docx2pdf package's convert method    
+            convert(word_filename, pdf_filename)
+        except Exception as error:
+            # Check if PDF was actually created despite the error
+            if os.path.exists(pdf_filename):
+                # This is a common issue with docx2pdf on Windows!
+                # The error com_error(-2147023170, 'The remote procedure call failed.')
+                # often happens when Microsoft Word is busy or has COM interface issues,
+                # but the conversion actually succeeds.
+                print(f"Conversion completed with minor issues: {error}")
+            # Clean up & delete Word file if conversion truly failed
+            else:
+                try:
+                    os.remove(word_filename)
+                except OSError:
+                    pass  # Ignore cleanup errors
+                raise Exception(f"Failed to convert .docx to .pdf: {error}")
+        
+        # Clean up - delete the temporary Word document after successful conversion
+        try:
+            os.remove(word_filename)
+            print(f"Temporary Word document '{word_filename}' deleted.")
+        except OSError as error:
+            print(f"Warning: Could not delete temporary Word file '{word_filename}': {error}")
+        
+        return pdf_filename
+
     def __add_document_heading(self, document):
         """
         Helper function to add and style the document heading.
@@ -308,9 +360,9 @@ class Exporter:
         timestamp = f"{now.year}{now.month:02d}{now.day:02d}_{now.hour:02d}{now.minute:02d}{now.second:02d}"
         
         # Create filename
-        # filename = f"{clean_title}_{timestamp}.docx"
+        filename = f"{clean_title}_{timestamp}.docx"
 
         # Use when testing, and uncomment above.
-        filename = f"demo.docx"
+        # filename = f"demo.docx"
         
         return filename

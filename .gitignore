@@ -3,3 +3,6 @@ __pycache__/
 
 # Word Documents shouldn't be included
 *.docx
+
+# PDF Documents shouldn't be included
+*.pdf
