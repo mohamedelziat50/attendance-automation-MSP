@@ -8,23 +8,16 @@ from attendance_tool.exporter import Exporter
 
 def main():
     # 3rd Party Library to handle different cmd arguments
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(allow_abbrev=False)
 
     # Usage: output incase invalid command used
     parser.usage = 'python main.py [file.csv (--word | --pdf) --title "Title"]'
 
     # Add optional positional argument for CSV file, nargs=? means it's either provided
-    #  or not provided, which allows for 2 different modes (GUI & cmd run)
+    # or not provided, which allows for 2 different modes (GUI & cmd run)
     parser.add_argument("csv_file", nargs="?", help="Path to the CSV file to process")
 
-    # Add title argument for Word/PDF documents
-    parser.add_argument(
-        "--title",
-        type=str,
-        help="Title for the Word/PDF document (e.g., 'Monday 5/5/2025')",
-    )
-
-    # Create a group to run either --word, --pdf, or no arguments at once
+    # Create a group to run either --word or --pdf one at time
     group = parser.add_mutually_exclusive_group()
 
     # --word argument
@@ -39,6 +32,13 @@ def main():
         "--pdf",
         action="store_true",
         help="Exports .csv file to .pdf document immediately",
+    )
+
+    # --title argument for Word/PDF documents
+    parser.add_argument(
+        "--title",
+        type=str,
+        help="Title for the Word/PDF document (e.g., 'Monday 5/5/2025')",
     )
 
     # Parse Arguments
