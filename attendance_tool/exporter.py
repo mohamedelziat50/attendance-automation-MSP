@@ -1,4 +1,5 @@
 import docx, docx.shared, docx.oxml
+from datetime import datetime
 
 
 class Exporter:
@@ -89,9 +90,12 @@ class Exporter:
         if self.invalid_rows:
             self.__add_error_log(document)
 
+        # Generate unique filename with title and timestamp
+        filename = self.__generate_filename()
+
         try:
-            # Rename this title later to self.title or smth similiar
-            document.save("demo.docx")
+            document.save(filename)
+            return filename
         except PermissionError as error:
             # Raised possibly because file is open, and we're trying to save it
             raise PermissionError(error)
@@ -112,6 +116,37 @@ class Exporter:
         heading_run.font.name = "Arial"  # Change font family to Arial
         heading_run.font.size = docx.shared.Pt(21)  # Set font size to 21 points
         heading_run.font.color.rgb = docx.shared.RGBColor(0, 0, 0)  # Set text color to black
+
+    def __generate_filename(self):
+        """
+        Helper function to generate a unique filename based on title and current timestamp.
+        Example: {title}_{date}_{hr&min&sec}.docx
+        Returns: str: A unique filename for the Word document
+        """
+        # Clean title - replace spaces with underscores
+        clean_title = self.title.replace(" ", "_")
+        
+        # Remove any remaining problematic characters
+        safe_characters = []
+        for char in clean_title:
+            if char.isalnum() or char == "_":
+                safe_characters.append(char)
+            else:
+                safe_characters.append("_")
+        
+        clean_title = "".join(safe_characters).strip("_")
+        
+        # Simple timestamp
+        now = datetime.now()
+        timestamp = f"{now.year}{now.month:02d}{now.day:02d}_{now.hour:02d}{now.minute:02d}{now.second:02d}"
+        
+        # Create filename
+        # filename = f"{clean_title}_{timestamp}.docx"
+
+        # Use when testing, and uncomment above.
+        filename = f"demo.docx"
+        
+        return filename
 
     def __create_attendance_table(self, document):
         """

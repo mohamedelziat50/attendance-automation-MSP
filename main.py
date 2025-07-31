@@ -43,7 +43,8 @@ def main():
         # Handle Arguments
         if args.word:
             print("Exporting to Word document...")
-            exporter.export_word()
+            filename = exporter.export_word()
+            print("File Name:", filename)
         elif args.pdf:
             print("Exporting to PDF document...")
             # TODO: Implement PDF export functionality
