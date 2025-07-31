@@ -1,4 +1,4 @@
-import docx, docx.shared
+import docx, docx.shared, docx.oxml
 
 
 class Exporter:
@@ -63,18 +63,18 @@ class Exporter:
         # Intialize Document
         document = docx.Document()
 
-        # Set default font for the document
-        # style = document.styles['Normal']
-        # font = style.font
-        # font.name = 'Arial'
-        # font.size = docx.shared.Pt(21)
-        # font.color.rgb = docx.shared.RGBColor(0, 0, 0)  # Black color
+        # Set page margins to 1 inch on all sides
+        for section in document.sections:
+            section.top_margin = docx.shared.Inches(1)
+            section.bottom_margin = docx.shared.Inches(1)
+            section.left_margin = docx.shared.Inches(1)
+            section.right_margin = docx.shared.Inches(1)
 
         # Add heading
         heading = document.add_heading(
-            f"{self.title} - Microsoft Students Partners Club (MSP)"
+            f"{self.title} - Microsoft Students Partners Club (MSP)",
         )
-
+        
         #  Style the heading
         heading_run = heading.runs[0]  # .runs[0] = first text chunk in the heading that we can style
         heading_run.font.name = "Arial"  # Change font family to Arial
@@ -83,9 +83,119 @@ class Exporter:
             0, 0, 0
         )  # Set text color to black
 
+        # Add a 2 blank lines after the heading
+        document.add_paragraph()
+        document.add_paragraph()
+
+        # Define table columns
+        columns = ["Name", "ID", "Course Code", "Time", "Name of the Doctor"]
+
+        # Create table: 1 header row + len(valid_rows) rows
+        table = document.add_table(rows=1, cols=len(columns))
+        table.style = "Table Grid"
+        
+        # Set table border color to blue
+        self.__set_table_border_color(table)
+
+        # --- Header Row ---
+        hdr_cells = table.rows[0].cells
+        # Set margins for header cells
+        self.__set_cell_margins(hdr_cells)
+        
+        for i, col_name in enumerate(columns):
+            paragraph = hdr_cells[i].paragraphs[0]
+            run = paragraph.add_run(col_name)
+            run.font.bold = True
+            run.font.name = 'Roboto'
+            run.font.size = docx.shared.Pt(11.5)
+            # paragraph.alignment = docx.enum.text.WD_PARAGRAPH_ALIGNMENT.CENTER
+
+        # --- Add rows for valid data ---
+        for row in self.valid_rows:
+            cells = table.add_row().cells
+            cells[0].text = row["Full Name"]
+            cells[1].text = row["University ID"]
+            cells[2].text = row["Course Code"]
+            cells[3].text = row["Course Time"]
+            cells[4].text = row["Doctor/TA Name"]
+            
+            # Set margins for data cells
+            self.__set_cell_margins(cells)
+            
+            # Format valid row text
+            for cell in cells:
+                for paragraph in cell.paragraphs:
+                    for run in paragraph.runs:
+                        run.font.size = docx.shared.Pt(11.5)
+                        run.font.name = 'Roboto'
+
+        # --- Add rows for invalid data (highlighted in red) ---
+        for row in self.invalid_rows:
+            cells = table.add_row().cells
+            cells[0].text = row["Full Name"]
+            cells[1].text = row["University ID"]
+            cells[2].text = row["Course Code"]
+            cells[3].text = row["Course Time"]
+            cells[4].text = row["Doctor/TA Name"]
+            
+            # Set margins for invalid data cells
+            self.__set_cell_margins(cells)
+            
+            # Highlight invalid row text in red
+            for cell in cells:
+                for paragraph in cell.paragraphs:
+                    for run in paragraph.runs:
+                        run.font.color.rgb = docx.shared.RGBColor(255, 0, 0)  # Red color
+                        run.font.size = docx.shared.Pt(11.5)
+                        run.font.name = 'Roboto'
+
         try:
             # Rename this title later to self.title or smth similiar
             document.save("demo.docx")
         except PermissionError as error:
             # Raised possibly because file is open, and we're trying to save it
             raise PermissionError(error)
+
+    def __set_cell_margins(self, cells):
+        """
+        Helper function to set cell margins using XML manipulation.
+        
+        ARG cells: List of table cells to apply margins to
+        ARG margin_size: Margin size in dxa units (default 120 = ~6 points, or change up)
+        """
+
+        # Specific Margin Sizes
+        top_margin = 100
+        right_margin = 560
+        bottom_margin = 660
+        left_margin = 100
+        
+        for cell in cells:
+            cell_element = cell._element
+            cell_properties = cell_element.get_or_add_tcPr()
+            margins = docx.oxml.parse_xml(f'<w:tcMar xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">'
+                                        f'<w:top w:w="{top_margin}" w:type="dxa"/>'
+                                        f'<w:left w:w="{left_margin}" w:type="dxa"/>'
+                                        f'<w:bottom w:w="{bottom_margin}" w:type="dxa"/>'
+                                        f'<w:right w:w="{right_margin}" w:type="dxa"/>'
+                                        f'</w:tcMar>')
+            cell_properties.append(margins)
+
+    def __set_table_border_color(self, table, color="0000FF"):
+        """
+        Helper function to set table border color using XML manipulation.
+
+        ARG table: The table object to apply border color to
+        ARG color: Hex color code (default "0000FF" for blue)
+        """
+        tbl = table._tbl
+        tblPr = tbl.tblPr
+        tblBorders = docx.oxml.parse_xml(f'<w:tblBorders xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">'
+                                       f'<w:top w:val="single" w:sz="4" w:space="0" w:color="{color}"/>'
+                                       f'<w:left w:val="single" w:sz="4" w:space="0" w:color="{color}"/>'
+                                       f'<w:bottom w:val="single" w:sz="4" w:space="0" w:color="{color}"/>'
+                                       f'<w:right w:val="single" w:sz="4" w:space="0" w:color="{color}"/>'
+                                       f'<w:insideH w:val="single" w:sz="4" w:space="0" w:color="{color}"/>'
+                                       f'<w:insideV w:val="single" w:sz="4" w:space="0" w:color="{color}"/>'
+                                       f'</w:tblBorders>')
+        tblPr.append(tblBorders)
