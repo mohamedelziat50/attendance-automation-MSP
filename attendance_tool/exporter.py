@@ -70,23 +70,57 @@ class Exporter:
             section.left_margin = docx.shared.Inches(1)
             section.right_margin = docx.shared.Inches(1)
 
+        # Add and style document heading
+        self.__add_document_heading(document)
+
+        # Add spacing after the heading
+        document.add_paragraph()
+
+        # Create and setup the attendance table
+        table = self.__create_attendance_table(document)
+
+        # Add valid data rows
+        self.__add_valid_data_rows(table)
+
+        # Add invalid data rows (highlighted in red)
+        self.__add_invalid_data_rows(table)
+
+        # Add error log section if there are invalid rows
+        if self.invalid_rows:
+            self.__add_error_log(document)
+
+        try:
+            # Rename this title later to self.title or smth similiar
+            document.save("demo.docx")
+        except PermissionError as error:
+            # Raised possibly because file is open, and we're trying to save it
+            raise PermissionError(error)
+        
+    def __add_document_heading(self, document):
+        """
+        Helper function to add and style the document heading.
+        
+        ARG document: The Word document to add the heading to
+        """
         # Add heading
         heading = document.add_heading(
             f"{self.title} - Microsoft Students Partners Club (MSP)",
         )
         
-        #  Style the heading
+        # Style the heading
         heading_run = heading.runs[0]  # .runs[0] = first text chunk in the heading that we can style
         heading_run.font.name = "Arial"  # Change font family to Arial
         heading_run.font.size = docx.shared.Pt(21)  # Set font size to 21 points
-        heading_run.font.color.rgb = docx.shared.RGBColor(
-            0, 0, 0
-        )  # Set text color to black
+        heading_run.font.color.rgb = docx.shared.RGBColor(0, 0, 0)  # Set text color to black
 
-        # Add a 2 blank lines after the heading
-        document.add_paragraph()
-        document.add_paragraph()
-
+    def __create_attendance_table(self, document):
+        """
+        Helper function to create and setup the attendance table with headers.
+        
+        ARG: document: The Word document to add the table to
+            
+        Returns: The created and configured table
+        """
         # Define table columns
         columns = ["Name", "ID", "Course Code", "Time", "Name of the Doctor"]
 
@@ -121,8 +155,15 @@ class Exporter:
             run.font.name = 'Roboto'
             run.font.size = docx.shared.Pt(11.5)
             # paragraph.alignment = docx.enum.text.WD_PARAGRAPH_ALIGNMENT.CENTER
+            
+        return table
 
-        # --- Add rows for valid data ---
+    def __add_valid_data_rows(self, table):
+        """
+        Helper function to add valid data rows to the attendance table.
+        
+        ARG table: The table object to add rows to
+        """
         for row in self.valid_rows:
             cells = table.add_row().cells
             cells[0].text = row["Full Name"]
@@ -141,7 +182,12 @@ class Exporter:
                         run.font.size = docx.shared.Pt(11.5)
                         run.font.name = 'Roboto'
 
-        # --- Add rows for invalid data (highlighted in red) ---
+    def __add_invalid_data_rows(self, table):
+        """
+        Helper function to add invalid data rows to the attendance table (highlighted in red).
+        
+        ARG table: The table object to add rows to
+        """
         for row in self.invalid_rows:
             cells = table.add_row().cells
             cells[0].text = row["Full Name"]
@@ -160,17 +206,6 @@ class Exporter:
                         run.font.color.rgb = docx.shared.RGBColor(255, 0, 0)  # Red color
                         run.font.size = docx.shared.Pt(11.5)
                         run.font.name = 'Roboto'
-
-        # Add error log section if there are invalid rows
-        if self.invalid_rows:
-            self.__add_error_log(document)
-
-        try:
-            # Rename this title later to self.title or smth similiar
-            document.save("demo.docx")
-        except PermissionError as error:
-            # Raised possibly because file is open, and we're trying to save it
-            raise PermissionError(error)
 
     def __set_cell_margins(self, cells):
         """
