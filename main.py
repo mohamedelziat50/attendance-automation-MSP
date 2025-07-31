@@ -11,14 +11,18 @@ def main():
     parser = argparse.ArgumentParser()
 
     # Usage: output incase invalid command used
-    parser.usage = "python main.py file.csv [--word | --pdf]"
+    parser.usage = 'python main.py [file.csv (--word | --pdf) --title "Title"]'
 
-    # Add Positional argument (do not start with - or --): required by default; no need for required=True
-    parser.add_argument("csv_file", help="Path to the CSV file to process")
+    # Add optional positional argument for CSV file, nargs=? means it's either provided
+    #  or not provided, which allows for 2 different modes (GUI & cmd run)
+    parser.add_argument("csv_file", nargs="?", help="Path to the CSV file to process")
 
-    # TODO: Add Title Argument which is not required for GUI, but is for word & pdf
-    # Example: python main.py input.csv --word "Monday 5/5/2025"
-    # Or Example: python main.py input.csv --word --title "Monday 5/5/2025"
+    # Add title argument for Word/PDF documents
+    parser.add_argument(
+        "--title",
+        type=str,
+        help="Title for the Word/PDF document (e.g., 'Monday 5/5/2025')",
+    )
 
     # Create a group to run either --word, --pdf, or no arguments at once
     group = parser.add_mutually_exclusive_group()
@@ -40,6 +44,21 @@ def main():
     # Parse Arguments
     args = parser.parse_args()
 
+    # Handle GUI mode (no arguments)
+    if not args.csv_file:
+        # If no CSV file but other arguments provided, it's an error
+        if args.title or args.word or args.pdf:
+            parser.error("CSV file is required when using --title, --word, or --pdf")
+        print("Launching GUI...")
+        # TODO: Implement GUI functionality
+        return
+
+    # Validate that all required arguments are provided for export mode
+    if not args.word and not args.pdf:
+        parser.error("Either --word or --pdf is required when providing a CSV file")
+    if not args.title:
+        parser.error("--title is required when providing a CSV file")
+
     # Get the CSV file path from arguments
     csv_file_path = args.csv_file
 
@@ -58,8 +77,8 @@ def main():
         for row in invalid_rows:
             print(row, end="\n\n")
 
-        # Intialize the exporter
-        exporter = Exporter(valid_rows, invalid_rows, title="Monday 5/5/2025")
+        # Initialize the exporter with title from command line arguments
+        exporter = Exporter(valid_rows, invalid_rows, args.title)
 
         # Handle Arguments
         if args.word:
@@ -69,17 +88,13 @@ def main():
             print("Exporting to PDF document...")
             # TODO: Implement PDF export functionality
             ...
-        else:
-            print("Launching GUI...")
-            # TODO: Implement GUI functionality
-            ...
 
     except FileNotFoundError as error:
         print(f"Error: {error}")
     except ValueError as error:
         print(f"Validation Error: {error}")
     except PermissionError as error:
-            print(f"Error saving document: {error}")
+        print(f"Error saving document: {error}")
     except Exception as error:
         print(f"Unexpected error: {error}")
 

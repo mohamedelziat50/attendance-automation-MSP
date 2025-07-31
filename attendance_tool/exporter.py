@@ -2,8 +2,8 @@ import docx, docx.shared
 
 
 class Exporter:
-    # Constructor with valid and invalid rows
-    def __init__(self, valid_rows, invalid_rows, title="Default Value Title"):
+    # Constructor with valid and invalid rows, and the document's title
+    def __init__(self, valid_rows, invalid_rows, title="Attendance Report"):
         self.valid_rows = valid_rows
         self.invalid_rows = invalid_rows
         self.title = title
