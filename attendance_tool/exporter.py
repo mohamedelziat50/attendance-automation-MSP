@@ -94,6 +94,18 @@ class Exporter:
         table = document.add_table(rows=1, cols=len(columns))
         table.style = "Table Grid"
         
+        # Set column widths to prevent text wrapping
+        column_widths = [
+            docx.shared.Inches(3.0),  # Name column - wider for long names
+            docx.shared.Inches(2.0),  # ID column
+            docx.shared.Inches(2.0),  # Course Code column
+            docx.shared.Inches(2.5),  # Time column
+            docx.shared.Inches(3.0)   # Doctor/TA Name column
+        ]
+        
+        for i, width in enumerate(column_widths):
+            table.columns[i].width = width
+        
         # Set table border color to blue
         self.__set_table_border_color(table)
 
@@ -165,10 +177,10 @@ class Exporter:
         """
 
         # Specific Margin Sizes
-        top_margin = 100
-        right_margin = 560
-        bottom_margin = 660
-        left_margin = 100
+        top_margin = 150
+        right_margin = 360
+        bottom_margin = 360
+        left_margin = 150
         
         for cell in cells:
             cell_element = cell._element
