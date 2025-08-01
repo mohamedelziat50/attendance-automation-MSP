@@ -102,11 +102,11 @@ class Processor:
                             self.validate_email(row["University Email"])
                         
                         # Validate Required Columns
-                        self.validate_name(row["Full Name"])
+                        row["Full Name"] = self.validate_name(row["Full Name"])  # Normalize student name
                         self.validate_university_id(row["University ID"])
                         self.validate_course_code(row["Course Code"])
                         row["Course Time"] = self.validate_course_time(row["Course Time"])  # Normalize course time format
-                        self.validate_dr_ta_name(row["Doctor/TA Name"])
+                        row["Doctor/TA Name"] = self.validate_dr_ta_name(row["Doctor/TA Name"])  # Normalize instructor name
 
                         # Append valid row if all validations pass
                         valid_rows.append(row)
@@ -158,11 +158,15 @@ class Processor:
 
     def validate_name(self, name):
         """
-        Validates a person's full name.
+        Validates and normalizes a person's full name.
+        Automatically capitalizes each word for consistent formatting.
         Regular expressions are used.
         
         Args:
             name (str): The full name to validate
+            
+        Returns:
+            str: Validated and properly capitalized name
             
         Raises:
             ValueError: If name is invalid
@@ -190,7 +194,10 @@ class Processor:
         if len(words) < 1 or len(words) > 5:
             raise ValueError("Name should contain 1-5 words")
 
-        # No return needed - function succeeds if no exception is raised
+        # Capitalize each word for consistent formatting
+        name = name.title()
+
+        return name
 
     def validate_email(self, email):
         """
@@ -403,12 +410,16 @@ class Processor:
 
     def validate_dr_ta_name(self, name):
         """
-        Validates instructor names (Doctor/TA).
+        Validates and normalizes instructor names (Doctor/TA).
         Similar functionality to validate_name but allows for titles like "Dr.", "TA", and "Prof.".
+        Auto-adds "Dr." prefix if no title is detected anywhere in the name.
         Regular expressions are used.
 
         Args:
             name (str): The instructor's name to validate
+            
+        Returns:
+            str: Normalized instructor name with appropriate title prefix
             
         Raises:
             ValueError: If name is invalid
@@ -427,13 +438,13 @@ class Processor:
 
         # Check if it's just a title without a name (incomplete)
         incomplete_titles = ["dr", "prof", "ta", "professor", "doctor", "dr.", "prof.", "ta."]
-        if name.lower() in incomplete_titles:
+        if name.lower().strip() in incomplete_titles:
             raise ValueError("Doctor/TA name cannot be just a title, must include actual name")
 
-        # Check for valid characters (letters, spaces, hyphens, apostrophes, periods for titles)
-        if not re.match(r"^[a-zA-Z\s'.-]+$", name):
+        # Check for valid characters (letters, spaces, hyphens, apostrophes, periods, parentheses for titles)
+        if not re.match(r"^[a-zA-Z\s'.\-()]+$", name):
             raise ValueError(
-                "Doctor/TA name can only contain letters, spaces, hyphens, apostrophes, and periods"
+                "Doctor/TA name can only contain letters, spaces, hyphens, apostrophes, periods, and parentheses"
             )
 
         # Check for reasonable number of words (1-6 to allow for titles like "Dr. John Smith")
@@ -441,4 +452,62 @@ class Processor:
         if len(words) < 1 or len(words) > 6:
             raise ValueError("Doctor/TA name should contain 1-6 words")
 
-        # No return needed - function succeeds if no exception is raised
+        # Normalize instructor title and auto-add "Dr." prefix if needed
+        name = self.__normalize_instructor_title(name)
+
+        # Return the potentially modified name
+        return name
+
+    def __normalize_instructor_title(self, name):
+        """
+        Helper method to detect, standardize, and normalize instructor titles.
+        
+        Automatically detects existing titles (Dr./Doctor, Prof./Professor, TA) and standardizes
+        their format. If no title is detected, automatically adds "Dr." prefix.
+        
+        Uses word boundary regex patterns to avoid false matches (e.g., "ta" in "Tamer").
+        
+        Args:
+            name (str): The instructor's name to normalize
+            
+        Returns:
+            str: Normalized name with standardized title format:
+                - "Dr." for doctor/dr variations
+                - "Prof." for professor/prof variations  
+                - "TA" for ta variations (no period)
+                - "Dr. {name}" for names without detected titles
+                
+        Examples:
+            "john smith" -> "Dr. John Smith"
+            "doctor jane doe" -> "Dr. Jane Doe"
+            "prof smith" -> "Prof. Smith"
+            "ta mike" -> "TA Mike"
+            "tamer ibrahim" -> "Dr. Tamer Ibrahim" (avoids false "ta" match)
+            "DR. SARAH wilson" -> "Dr. Sarah Wilson"
+        """
+        name_lower = name.lower()
+        
+        # First, capitalize the entire name to ensure proper case
+        name = name.title()
+        
+        # Then check what type of title exists and standardize accordingly
+        # Use word boundaries (\b) to avoid false matches (e.g., "ta" in "Tamer")
+        
+        if re.search(r'\b(doctor|dr)\b', name_lower):
+            # Replace any doctor/dr variations with "Dr." - avoid double periods
+            name = re.sub(r'\b(doctor|dr\.?)\b', 'Dr.', name, flags=re.IGNORECASE)
+            # Fix any double periods that might occur
+            name = name.replace('Dr..', 'Dr.')
+        elif re.search(r'\b(professor|prof)\b', name_lower):
+            # Replace any professor/prof variations with "Prof." - avoid double periods
+            name = re.sub(r'\b(professor|prof\.?)\b', 'Prof.', name, flags=re.IGNORECASE)
+            # Fix any double periods that might occur
+            name = name.replace('Prof..', 'Prof.')
+        elif re.search(r'\bta\b', name_lower):
+            # Replace any TA variations with "TA" (no dot)
+            name = re.sub(r'\bta\.?\b', 'TA', name, flags=re.IGNORECASE)
+        else:
+            # No title found, add "Dr." prefix (name is already capitalized)
+            name = f"Dr. {name}"
+
+        return name

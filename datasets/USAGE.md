@@ -46,14 +46,26 @@ This folder contains realistic test datasets for validating the attendance autom
 - **Expected Result**: All rows should be valid
 - **Use Case**: Testing system with larger volumes of data
 
+### 9. `instructor_names.csv` (10 rows)
+- **Purpose**: Tests instructor name validation and normalization with various title formats
+- **Expected Result**: All rows should be valid with properly normalized instructor names
+- **Use Case**: Testing instructor name capitalization and title standardization
+- **Features Tested**: Auto "Dr." prefix addition, title normalization (Dr./Prof./TA), proper capitalization, avoiding false matches (e.g., "ta" in "Tamer")
+
+### 10. `instructor_edge_cases.csv` (11 rows)
+- **Purpose**: Tests edge cases and validation failures for instructor names
+- **Expected Result**: Mix of valid and invalid rows to test boundary conditions
+- **Use Case**: Testing instructor name validation limits and error handling
+- **Edge Cases**: Very long names, incomplete titles, special characters, names at validation boundaries
+
 ## Common Test Errors Included:
 
-- **Names**: Too short (e.g., "Mo"), missing names
+- **Names**: Too short (e.g., "Mo"), missing names, inconsistent capitalization
 - **Emails**: Wrong domain (@gmail.com instead of @miuegypt.edu.eg), missing username parts
 - **Student IDs**: Wrong format (missing zeros, wrong year like 2025), too short
 - **Course Codes**: Missing letters (CS120 instead of CSC120), invalid formats
 - **Times**: Invalid hours (25:00), wrong time ranges
-- **Doctor Names**: Incomplete names ("Dr", "TA", "Prof")
+- **Doctor Names**: Incomplete names ("Dr", "TA", "Prof"), inconsistent title formatting, case sensitivity issues
 
 ## Usage:
 
@@ -81,6 +93,12 @@ python main.py datasets/small_data.csv --word --title "Small Data Test"
 
 # Large dataset performance test
 python main.py datasets/large_data.csv --pdf --title "Large Data Test"
+
+# Test instructor name normalization and title standardization
+python main.py datasets/instructor_names.csv --word --title "Instructor Names Test"
+
+# Test instructor name edge cases and validation boundaries
+python main.py datasets/instructor_edge_cases.csv --pdf --title "Instructor Edge Cases Test"
 ```
 
 All datasets follow the same structure but with controlled data quality for specific testing scenarios.
