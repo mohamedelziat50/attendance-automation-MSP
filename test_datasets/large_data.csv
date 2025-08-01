@@ -1,0 +1,51 @@
+Timestamp,Full Name,University Email,University ID,Course Code,Course Time,Doctor/TA Name
+3/12/2025 09:15:10,Ahmed Hassan,ahmed.hassan@miuegypt.edu.eg,2023/00001,SWE21201,1:00 - 2:30,Dr. Ahmed Smith
+3/12/2025 09:20:42,Sara Mohamed,sara.mohamed@miuegypt.edu.eg,2022/00002,CSC23002 Lecture,11:30 - 1:00,TA Mariam Hassan
+3/12/2025 09:33:01,Omar Nabil,omar.nabil@miuegypt.edu.eg,2023/00003,BAS11204 Lecture,12:00 - 2:00,Dr. Youssef Ali
+3/12/2025 09:40:55,Mona Adel,mona.adel@miuegypt.edu.eg,2023/00004,SWE1113 Tutorial,1:30 - 3:00,Dr. Fatma Mostafa
+3/12/2025 09:50:10,John Doe,john.doe@miuegypt.edu.eg,2023/00005,INF23005-LAB,1 - 2,TA Ali Samir
+3/12/2025 10:05:44,Laila Mohamed,laila.mohamed@miuegypt.edu.eg,2023/00006,CSC22003,11 - 12:30,Dr. Omar Tarek
+3/12/2025 10:15:20,Karim Yasser,karim.yasser@miuegypt.edu.eg,2024/00007,SWE21007-Tutorial,11:00 - 1:00,Dr. Youssef Mostafa
+3/12/2025 10:22:02,Heba Ragab,heba.ragab@miuegypt.edu.eg,2023/00008,CSC12009 Lab,11:30 - 1:00,Dr. Amira Hassan
+3/12/2025 10:35:11,Yasmin Ali,yasmin.ali@miuegypt.edu.eg,2023/00009,MRK10002-BUS,1:00 - 2:30,Prof. Ahmed Farouk
+3/12/2025 10:45:59,Mahmoud Saeed,mahmoud.saeed@miuegypt.edu.eg,2022/00010,SWE21104,2:00 - 3:30,Dr. Youssef Said
+3/12/2025 11:00:15,Nour Hassan,nour.hassan@miuegypt.edu.eg,2023/00011,BAS11111 Lecture,10:30 - 12:00,Dr. Maha Farouk
+3/12/2025 11:15:25,Mohamed Abdel-Rahman,mohamed.abdel@miuegypt.edu.eg,2023/00012,CSC21009,2:30 - 4:00,Dr. Khaled Ahmed
+3/12/2025 11:30:40,Nour El-Din,nour.eldin@miuegypt.edu.eg,2024/00013,INF23012-Tutorial,10:00 - 11:30,Prof. Dina Farouk
+3/12/2025 11:45:55,Dina Abdel-Aziz,dina.abdel@miuegypt.edu.eg,2022/00014,SWE2304 Lab,9:00 - 10:30,TA Ramy Hassan
+3/12/2025 12:00:10,Tamer Said,tamer.said@miuegypt.edu.eg,2023/00015,BAS1215,1:15 - 2:45,Dr. Nesma Farouk
+3/12/2025 12:15:25,Aya Mahmoud,aya.mahmoud@miuegypt.edu.eg,2024/00016,CSC11008-G3,11:45 - 1:15,TA Mohamed Ali
+3/12/2025 12:30:40,Hassan Nabil,hassan.nabil@miuegypt.edu.eg,2023/00017,MRK10015 Tutorial,8:30 - 10:00,Prof. Laila Ahmed
+3/12/2025 12:45:55,Fatma Ibrahim,fatma.ibrahim@miuegypt.edu.eg,2022/00018,SWE21018,3:00 - 4:30,Dr. Amir Youssef
+3/12/2025 13:00:10,Ramy Gamal,ramy.gamal@miuegypt.edu.eg,2023/00019,INF2309-Lecture,12:15 - 1:45,TA Ahmed Ali
+3/12/2025 13:15:25,Salma Youssef,salma.youssef@miuegypt.edu.eg,2022/00020,BAS13117 Lecture,2:15 - 3:45,Dr. Mona Abdel-Aziz
+3/12/2025 13:30:40,Amr Tawfik,amr.tawfik@miuegypt.edu.eg,2024/00021,CSC2201,9:45 - 11:15,TA Hoda Said
+3/12/2025 13:45:55,Nada Ashraf,nada.ashraf@miuegypt.edu.eg,2023/00022,SWE11111-Tutorial,8:00 - 9:30,Dr. Samer Naguib
+3/12/2025 14:00:10,Youssef Medhat,youssef.medhat@miuegypt.edu.eg,2022/00023,MRK10023-G1,10:15 - 11:45,Prof. Hala Mostafa
+3/12/2025 14:15:25,Mariam Samir,mariam.samir@miuegypt.edu.eg,2024/00024,BAS1127,1:45 - 3:15,Dr. Walid Hassan
+3/12/2025 14:30:40,Khaled Farouk,khaled.farouk@miuegypt.edu.eg,2023/00025,CSC23025 Lab,11:00 - 12:30,TA Sara Nabil
+3/12/2025 14:45:55,Noha Abdel-Rahman,noha.abdel@miuegypt.edu.eg,2022/00026,INF2308,2:45 - 4:15,Dr. Mostafa Ali
+3/12/2025 15:00:10,Fadi Mansour,fadi.mansour@miuegypt.edu.eg,2023/00027,SWE21027-G2,12:45 - 2:15,TA Lina Ahmed
+3/12/2025 15:15:25,Lina Adel,lina.adel@miuegypt.edu.eg,2024/00028,BAS11128 Tutorial,8:15 - 9:45,Dr. Bassem Nabil
+3/12/2025 15:30:40,Omar El-Sherbiny,omar.sherbiny@miuegypt.edu.eg,2023/00029,CSC12029,10:30 - 12:00,Prof. Nadia Farouk
+3/12/2025 15:45:55,Ghada Talaat,ghada.talaat@miuegypt.edu.eg,2022/00030,MRK10030-Lecture,1:30 - 3:00,Dr. Sherif Abdel-Rahman
+3/12/2025 16:00:10,Sherif Hassan,sherif.hassan@miuegypt.edu.eg,2024/00031,SWE2313,9:00 - 10:30,TA Dina Ali
+3/12/2025 16:15:25,Dina Farouk,dina.farouk@miuegypt.edu.eg,2023/00032,INF23032-G3,11:15 - 12:45,Dr. Kareem Said
+3/12/2025 16:30:40,Kareem Abdel-Fattah,kareem.abdel@miuegypt.edu.eg,2022/00033,BAS13133,2:00 - 3:30,Prof. Eman Hassan
+3/12/2025 16:45:55,Eman Youssef,eman.youssef@miuegypt.edu.eg,2024/00034,CSC22034 Tutorial,8:45 - 10:15,TA Rania Nabil
+3/12/2025 17:00:10,Reda Mahmoud,reda.mahmoud@miuegypt.edu.eg,2022/00035,SWE11035,8:45 - 10:15,TA Huda Ahmed
+3/12/2025 17:15:25,Huda Farouk,huda.farouk@miuegypt.edu.eg,2023/00036,MRK10036-Lab,10:45 - 12:15,Dr. Amir Said
+3/12/2025 17:30:40,Amir Naguib,amir.naguib@miuegypt.edu.eg,2024/00037,BAS11137 Lecture,12:30 - 2:00,Prof. Reham Mostafa
+3/12/2025 17:45:55,Reham Abdel-Fattah,reham.abdel@miuegypt.edu.eg,2024/00038,CSC23038,11:30 - 1:00,Dr. Waleed Ibrahim
+3/12/2025 18:00:10,Waleed Hassan,waleed.hassan@miuegypt.edu.eg,2023/00039,INF2309-Tutorial,1:15 - 2:45,TA Yasmin Ali
+3/12/2025 18:15:25,Yasmin Samir,yasmin.samir@miuegypt.edu.eg,2022/00040,SWE21040,3:30 - 5:00,Dr. Karim Hassan
+3/12/2025 18:30:40,Karim Mostafa,karim.mostafa@miuegypt.edu.eg,2024/00041,BAS13141-G1,9:30 - 11:00,Prof. Nesma Abdel-Rahman
+3/12/2025 18:45:55,Nesma Ibrahim,nesma.ibrahim@miuegypt.edu.eg,2023/00042,CSC12042 Lab,2:15 - 3:45,TA Rania Said
+3/12/2025 19:00:10,Karim Badawy,karim.badawy@miuegypt.edu.eg,2024/00043,MRK10043,10:30 - 12:00,TA Nesma Said
+3/12/2025 19:15:25,Nesma Abdel-Moneim,nesma.abdel@miuegypt.edu.eg,2023/00044,SWE23044-Tutorial,1:45 - 3:15,Dr. Hazem Nabil
+3/12/2025 19:30:40,Hazem Ali,hazem.ali@miuegypt.edu.eg,2022/00045,INF23045 Lecture,11:45 - 1:15,Prof. Rania Hassan
+3/12/2025 19:45:55,Rania El-Shazly,rania.shazly@miuegypt.edu.eg,2023/00046,BAS11146,9:30 - 11:00,Dr. Adel Hassan
+3/12/2025 20:00:10,Adel Mahmoud,adel.mahmoud@miuegypt.edu.eg,2024/00047,CSC22047-G2,8:00 - 9:30,TA Ghada Ali
+3/12/2025 20:15:25,Ghada Hassan,ghada.hassan@miuegypt.edu.eg,2023/00048,SWE21048,12:00 - 1:30,Dr. Reda Farouk
+3/12/2025 20:30:40,Reda Youssef,reda.youssef@miuegypt.edu.eg,2022/00049,MRK10049-Lab,2:30 - 4:00,Prof. Huda Nabil
+3/12/2025 20:45:55,Huda Mostafa,huda.mostafa@miuegypt.edu.eg,2024/00050,BAS13150 Tutorial,10:00 - 11:30,Dr. Amir Hassan

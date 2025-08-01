@@ -1,4 +1,5 @@
 import os, csv, re, validators
+from datetime import datetime
 
 
 # File Name: Small Title, Class Name: Capitalized
@@ -172,8 +173,8 @@ class Processor:
         # Remove extra whitespace
         name = name.strip()
 
-        if len(name) < 2:
-            raise ValueError("Name must be at least 2 characters long")
+        if len(name) < 3:
+            raise ValueError("Name must be at least 3 characters long")
 
         if len(name) > 50:
             raise ValueError("Name must be less than 50 characters")
@@ -252,10 +253,12 @@ class Processor:
         if not year_part.isdigit() or len(year_part) != 4:
             raise ValueError("Year part must be exactly 4 digits")
 
-        # Check if year is reasonable (assuming students from 2010-2050)
+        # Check if year is reasonable (assuming students from atleast 2010 to current year)
         year = int(year_part)
-        if year < 2010 or year > 2050:
-            raise ValueError(f"Year must be between 2010-2050, got: {year}")
+        current_year = datetime.now().year  # Dynamic current year
+        
+        if year < 2010 or year > current_year:
+            raise ValueError(f"Year must be between 2010-{current_year}, got: {year}")
 
         # Validate number part (5 digits)
         if not number_part.isdigit() or len(number_part) != 5:
@@ -416,11 +419,16 @@ class Processor:
         # Remove extra whitespace
         name = name.strip()
 
-        if len(name) < 2:
-            raise ValueError("Doctor/TA name must be at least 2 characters long")
+        if len(name) < 3:
+            raise ValueError("Doctor/TA name must be at least 3 characters long")
 
         if len(name) > 60:
             raise ValueError("Doctor/TA name must be less than 60 characters")
+
+        # Check if it's just a title without a name (incomplete)
+        incomplete_titles = ["dr", "prof", "ta", "professor", "doctor", "dr.", "prof.", "ta."]
+        if name.lower() in incomplete_titles:
+            raise ValueError("Doctor/TA name cannot be just a title, must include actual name")
 
         # Check for valid characters (letters, spaces, hyphens, apostrophes, periods for titles)
         if not re.match(r"^[a-zA-Z\s'.-]+$", name):
