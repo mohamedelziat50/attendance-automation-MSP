@@ -97,7 +97,9 @@ class Processor:
                 for row in reader:
                     try:
                         self.validate_name(row["Full Name"])
-                        self.validate_email(row["University Email"])
+                        # Only validate email if the column exists in CSV headers
+                        if "University Email" in reader.fieldnames:
+                            self.validate_email(row["University Email"])
                         self.validate_university_id(row["University ID"])
                         self.validate_course_code(row["Course Code"])
                         self.validate_course_time(row["Course Time"])
@@ -132,7 +134,6 @@ class Processor:
         # All required columns that must be present
         required_columns = [
             "Full Name",
-            "University Email",
             "University ID",
             "Course Code",
             "Course Time",
