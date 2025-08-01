@@ -4,7 +4,7 @@ This folder contains realistic test datasets for validating the attendance autom
 
 ## Dataset Files:
 
-### 1. `valid_data.csv` (10 rows)
+### 1. `valid_data.csv` (8 rows)
 - **Purpose**: All data is valid and should pass validation
 - **Expected Result**: All rows go to valid_rows, no errors
 - **Use Case**: Testing successful processing flow
@@ -59,28 +59,28 @@ This folder contains realistic test datasets for validating the attendance autom
 
 ```bash
 # Test with valid data (all should pass)
-python main.py test_datasets/valid_data.csv --word --title "Valid Test"
+python main.py datasets/valid_data.csv --word --title "Valid Test"
 
 # Test with invalid data (all should fail)
-python main.py test_datasets/invalid_data.csv --pdf --title "Invalid Test"
+python main.py datasets/invalid_data.csv --pdf --title "Invalid Test"
 
 # Test with mixed data (some pass, some fail)
-python main.py test_datasets/mixed_data.csv --word --title "Mixed Test"
+python main.py datasets/mixed_data.csv --word --title "Mixed Test"
 
 # Test without email column (email validation skipped)
-python main.py test_datasets/no_email.csv --pdf --title "No Email Test"
+python main.py datasets/no_email.csv --pdf --title "No Email Test"
 
 # Test time format normalization (all times should be H:MM - H:MM)
-python main.py test_datasets/time_formats.csv --word --title "Time Format Test"
+python main.py datasets/time_formats.csv --word --title "Time Format Test"
 
 # Test edge cases and boundary conditions
-python main.py test_datasets/edge_cases.csv --pdf --title "Edge Cases Test"
+python main.py datasets/edge_cases.csv --pdf --title "Edge Cases Test"
 
 # Quick test with minimal data
-python main.py test_datasets/small_data.csv --word --title "Small Data Test"
+python main.py datasets/small_data.csv --word --title "Small Data Test"
 
 # Large dataset performance test
-python main.py test_datasets/large_data.csv --pdf --title "Large Data Test"
+python main.py datasets/large_data.csv --pdf --title "Large Data Test"
 ```
 
 All datasets follow the same structure but with controlled data quality for specific testing scenarios.
