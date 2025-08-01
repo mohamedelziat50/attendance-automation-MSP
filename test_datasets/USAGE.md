@@ -33,7 +33,7 @@ This folder contains realistic test datasets for validating the attendance autom
 
 ### 6. `edge_cases.csv` (8 rows)
 - **Purpose**: Tests boundary conditions and edge cases
-- **Expected Result**: All should be valid (testing limits)
+- **Expected Result**: All should be valid except 3 rows (testing limits)
 - **Use Case**: Testing validation boundary conditions
 
 ### 7. `small_data.csv` (3 rows)
@@ -83,4 +83,4 @@ python main.py test_datasets/small_data.csv --word --title "Small Data Test"
 python main.py test_datasets/large_data.csv --pdf --title "Large Data Test"
 ```
 
-All datasets follow the same structure as the main input.csv but with controlled data quality for specific testing scenarios.
+All datasets follow the same structure but with controlled data quality for specific testing scenarios.
