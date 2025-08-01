@@ -4,8 +4,25 @@ from docx2pdf import convert
 
 
 class Exporter:
+    """
+    Document export class for generating Word and PDF attendance reports.
+    
+    Attributes:
+        valid_rows (list): Valid attendance records
+        invalid_rows (list): Invalid records with error messages
+        title (str): Document title
+    """
+    
     # Constructor with valid and invalid rows, and the document's title
     def __init__(self, valid_rows, invalid_rows, title="Attendance Report"):
+        """
+        Initialize the Exporter with attendance data.
+        
+        Args:
+            valid_rows (list): Valid attendance records
+            invalid_rows (list): Invalid records with error info
+            title (str, optional): Document title. Defaults to "Attendance Report"
+        """
         self.valid_rows = valid_rows
         self.invalid_rows = invalid_rows
         self.title = title
@@ -18,6 +35,15 @@ class Exporter:
     # Setter for valid_rows: Empty Lists are allowed
     @valid_rows.setter
     def valid_rows(self, valid_rows):
+        """
+        Set valid attendance rows with type and structure validation.
+        
+        Args:
+            valid_rows (list): List of dictionaries containing valid attendance data
+            
+        Raises:
+            ValueError: If not a list or contains non-dictionary elements
+        """
         if not isinstance(valid_rows, list):
             raise ValueError("Valid rows must be a list")
         # Check if list is not empty and first item is dict
@@ -33,6 +59,15 @@ class Exporter:
     # Setter for invalid_rows: Empty Lists are allowed
     @invalid_rows.setter
     def invalid_rows(self, invalid_rows):
+        """
+        Set invalid attendance rows with type and structure validation.
+        
+        Args:
+            invalid_rows (list): List of dictionaries containing invalid attendance data
+            
+        Raises:
+            ValueError: If not a list or contains non-dictionary elements
+        """
         if not isinstance(invalid_rows, list):
             raise ValueError("Invalid rows must be a list")
         # Check if list is not empty and first item is dict
@@ -48,6 +83,15 @@ class Exporter:
     # Setter for title
     @title.setter
     def title(self, title):
+        """
+        Set document title with validation.
+        
+        Args:
+            title (str): Document title for headers and filenames
+            
+        Raises:
+            ValueError: If not a string or empty after trimming whitespace
+        """
         if not isinstance(title, str):
             raise ValueError("Title must be a string")
         if not title.strip():
@@ -56,13 +100,15 @@ class Exporter:
 
     def export_word(self):
         """
-        Export the valid and invalid attendance rows to a Word document.
-
-        Returns: str: The file path of the generated Word document
-
-        Raises PermissionError: If the Word document cannot be created or saved
+        Generate a Word document containing attendance data.
+        
+        Returns:
+            str: The file path of the generated Word document
+            
+        Raises:
+            PermissionError: If document cannot be created or saved
         """
-        # Intialize Document
+        # Initialize Document
         document = docx.Document()
 
         # Set page margins to 1 inch on all sides
@@ -103,16 +149,15 @@ class Exporter:
 
     def export_pdf(self):
         """
-        Export the valid and invalid attendance rows to a PDF document.
+        Generate a PDF document by converting a Word document.
         The temporary Word document is automatically deleted after conversion.
-
-        Returns: str: The file path of the generated PDF document
-
-        Raises: 
-            PermissionError: If the Word document cannot be created or saved before converting to PDF
-            FileNotFoundError: If Word document creation fails or file not found for conversion
-            OSError: If OS-level errors occur during conversion
-            Exception: If any other error occurs during Word creation or PDF conversion
+        
+        Returns:
+            str: The file path of the generated PDF document
+            
+        Raises:
+            PermissionError: If Word document creation fails due to file access issues
+            Exception: If Word document creation fails or PDF conversion fails
         """
         # First create the Word document
         try:
@@ -154,9 +199,10 @@ class Exporter:
 
     def __add_document_heading(self, document):
         """
-        Helper function to add and style the document heading.
+        Helper method for exporting word document - Add document heading with title and branding.
         
-        ARG document: The Word document to add the heading to
+        Args:
+            document (docx.Document): The Word document object
         """
         # Add heading
         heading = document.add_heading(
@@ -171,11 +217,13 @@ class Exporter:
 
     def __create_attendance_table(self, document):
         """
-        Helper function to create and setup the attendance table with headers.
+        Helper method for exporting word document - Create the main attendance data table.
         
-        ARG: document: The Word document to add the table to
+        Args:
+            document (docx.Document): The Word document object
             
-        Returns: The created and configured table
+        Returns:
+            docx.table.Table: The customized table object
         """
         # Define table columns
         columns = ["Name", "ID", "Course Code", "Time", "Name of the Doctor"]
@@ -216,10 +264,11 @@ class Exporter:
 
     def __add_data_rows(self, table, valid=True):
         """
-        Helper function to add data rows to the attendance table.
+        Helper method for exporting word document - Add data rows to the attendance table.
 
-        ARG table: The table object to add rows to
-        ARG valid: True for valid rows, False for invalid rows
+        Args:
+            table (docx.table.Table): The table object to add rows to
+            valid (bool): True for valid rows, False for invalid rows
         """
         # Choose which data to process based on valid parameter - Pythonic Ternary Operator!
         for row in (self.valid_rows if valid else self.invalid_rows):
@@ -245,10 +294,10 @@ class Exporter:
 
     def __set_cell_margins(self, cells):
         """
-        Helper function to set cell margins using XML manipulation.
+        Helper method for exporting word document - Set cell margins using XML manipulation.
         
-        ARG cells: List of table cells to apply margins to
-        ARG margin_size: Margin size in dxa units (default 120 = ~6 points, or change up)
+        Args:
+            cells (list): List of table cells to apply margins to
         """
 
         # Specific Margin Sizes
@@ -270,10 +319,11 @@ class Exporter:
 
     def __set_table_border_color(self, table, color="0000FF"):
         """
-        Helper function to set table border color using XML manipulation.
+        Helper method for exporting word document - Set table border color using XML manipulation.
 
-        ARG table: The table object to apply border color to
-        ARG color: Hex color code (default "0000FF" for blue)
+        Args:
+            table (docx.table.Table): The table object to apply border color to
+            color (str): Hex color code (default "0000FF" for blue)
         """
         tbl = table._tbl
         tblPr = tbl.tblPr
@@ -289,9 +339,10 @@ class Exporter:
 
     def __add_error_log(self, document):
         """
-        Helper function to add validation error log section to the document.
+        Helper method for exporting word document - Add validation error log section to the document.
         
-        ARG document: The Word document to add the error log to
+        Args:
+            document (docx.Document): The Word document to add the error log to
         """
         # Add some space before the log
         document.add_paragraph()
@@ -338,9 +389,13 @@ class Exporter:
 
     def __generate_filename(self):
         """
-        Helper function to generate a unique filename based on title and current timestamp.
-        Example: {title}_{date}_{hr&min&sec}.docx
-        Returns: str: A unique filename for the Word document
+        Helper method for exporting word document - Generate a unique filename based on title and current timestamp.
+
+        Example:
+            {title}_{date}_{hr&min&sec}.docx
+        
+        Returns:
+            str: A unique filename for the Word document
         """
         # Clean title - replace spaces with underscores
         clean_title = self.title.replace(" ", "_")

@@ -3,8 +3,21 @@ import os, csv, re, validators
 
 # File Name: Small Title, Class Name: Capitalized
 class Processor:
+    """
+    CSV validation and processing class for attendance data.
+
+    Attributes:
+        file_path (str): Path to the CSV file to process
+    """
+    
     # Constructor With a single property: file path
     def __init__(self, file_path):
+        """
+        Initialize the Processor with CSV file path.
+        
+        Args:
+            file_path (str): Path to the CSV file to process
+        """
         self.file_path = file_path
 
     # Getter
@@ -15,6 +28,16 @@ class Processor:
     # Setter
     @file_path.setter
     def file_path(self, file_path):
+        """
+        Set CSV file path with validation.
+        
+        Args:
+            file_path (str): Path to the CSV file to process
+            
+        Raises:
+            FileNotFoundError: If file does not exist
+            ValueError: If file is not a CSV file
+        """
         # Check if file exists first
         if not os.path.exists(file_path):
             raise FileNotFoundError(f"The file '{file_path}' does not exist.")
@@ -23,10 +46,16 @@ class Processor:
             raise ValueError(f"The file '{file_path}' is not a .csv file")
         self._file_path = file_path
 
-    # Allow the proccesor to be printed immediatly if needed
     def __str__(self):
         """
-        Handles medium files (500-5,000 rows) perfectly fine for our use case
+        Returns string representation of CSV data for debugging.
+        Handles small-medium sized CSV files (1-5000 rows).
+        
+        Returns:
+            str: Formatted CSV data or appropriate message if file is empty
+            
+        Raises:
+            FileNotFoundError: If CSV file cannot be opened
         """
         try:
             with open(self.file_path) as file:
@@ -46,9 +75,14 @@ class Processor:
 
     def process(self):
         """
-        Validates an entire CSV file's rows
-        Raises FileNotFoundError: If unable to open file
-        Raises ValueError: If CSV's Headers are not valid
+        Validates CSV file and returns valid and invalid data.
+        
+        Returns:
+            tuple: (valid_rows, invalid_rows) as lists of dictionaries
+            
+        Raises:
+            FileNotFoundError: If CSV file cannot be opened
+            ValueError: If CSV headers are invalid or missing
         """
         try:
             with open(self.file_path) as file:
@@ -84,9 +118,13 @@ class Processor:
 
     def validate_csv_headers(self, fieldnames):
         """
-        Validates CSV headers/columns exist.
-
-        Raises ValueError: If any required column is missing or if headers are empty
+        Validates that all required CSV headers are present.
+        
+        Args:
+            fieldnames (list): List of column headers from CSV file
+            
+        Raises:
+            ValueError: If columns/headers are missing or empty
         """
         if not fieldnames:
             raise ValueError("CSV file has no headers/columns")
@@ -114,9 +152,14 @@ class Processor:
 
     def validate_name(self, name):
         """
-        Validates a person's name.
-        Raises ValueError if invalid, returns nothing if valid.
-        Regular Expressions Used
+        Validates a person's full name.
+        Regular expressions are used.
+        
+        Args:
+            name (str): The full name to validate
+            
+        Raises:
+            ValueError: If name is invalid
         """
         if not name or not isinstance(name, str):
             raise ValueError("Name must be a non-empty string")
@@ -145,9 +188,14 @@ class Processor:
 
     def validate_email(self, email):
         """
-        Validates an email address.
-        Raises ValueError if invalid, returns nothing if valid.
-        Regular Expressions Not Used
+        Validates university email addresses.
+        Regular expressions are not used.
+        
+        Args:
+            email (str): The email address to validate
+            
+        Raises:
+            ValueError: If email is invalid or not from required domain
         """
         if not email or not isinstance(email, str):
             raise ValueError("Email must be a non-empty string")
@@ -170,11 +218,17 @@ class Processor:
 
     def validate_university_id(self, student_id):
         """
-        Validates MIU student ID.
-        Example: 2023/00824
-        Format: YYYY/XXXXX (4-digit year / 5-digit number)
-        Raises ValueError if invalid.
-        Regular Expressions Not Used
+        Validates MIU student ID format (YYYY/XXXXX).
+        Regular expressions are not used.
+
+        Examples:
+            2023/00824, 2020/34125
+        
+        Args:
+            student_id (str): The student ID to validate
+            
+        Raises:
+            ValueError: If student ID format is invalid
         """
         if not student_id or not isinstance(student_id, str):
             raise ValueError("Student ID must be a non-empty string")
@@ -206,11 +260,18 @@ class Processor:
 
     def validate_course_code(self, course_code):
         """
-        Validates MIU course code.
-        Format: At least 3 letters + at least 3 numbers + optional additional characters
-        Examples: SWE11004, CSC101, MRK10105-BUS, ETH10104-CSC, BAS13104 Lecture, BAS13104 Tutorial
-        Raises ValueError if invalid.
-        Regular Expressions Used
+        Validates MIU course code format.
+        At least 3 letters + at least 3 numbers + optional additional characters.
+        Regular expressions are used.
+
+        Examples:
+            SWE11004, CSC101, MRK10105-BUS, ETH10104-CSC, BAS13104 Lecture, BAS13104 Tutorial
+        
+        Args:
+            course_code (str): The course code to validate
+            
+        Raises:
+            ValueError: If course code format is invalid
         """
         if not course_code or not isinstance(course_code, str):
             raise ValueError("Course code must be a non-empty string")
@@ -238,11 +299,18 @@ class Processor:
 
     def validate_course_time(self, course_time):
         """
-        Validates Course Time.
-        Format: H:MM - H:MM, or H - H:MM, or H to H:MM (minutes optional & - or to seperator)
-        Examples: 1:00 - 2:30, 11:30 - 1, 1 to 2:30, 9 - 10:15
-        Raises ValueError if invalid.
-        Regular Expressions Used
+        Validates course time format.
+        Supports formats like H:MM - H:MM, H - H:MM, H to H:MM (minutes optional, - or to separator).
+        Regular expressions are used.
+
+        Examples:
+            1:00 - 2:30, 11:30 - 1, 1 to 2:30, 9 - 10:15
+
+        Args:
+            course_time (str): The course time to validate
+            
+        Raises:
+            ValueError: If course time format is invalid
         """
         if not course_time or not isinstance(course_time, str):
             raise ValueError("Course time must be a non-empty string")
@@ -293,28 +361,41 @@ class Processor:
 
     def validate_hour(self, hour):
         """
-        Validates hours between 1-12.
-
-        Raises ValueError: If hour is not between 1-12
+        Helper method for course time validation - validates hour values for 12-hour time format.
+        
+        Args:
+            hour (int): Hour value to validate
+            
+        Raises:
+            ValueError: If hour is not between 1-12 (inclusive)
         """
         if not (1 <= hour <= 12):
             raise ValueError(f"Hour must be between 1-12, got: {hour}")
 
     def validate_minutes(self, minutes):
         """
-        Validates minutes between 0-59.
-
-        Raises ValueError: If minutes is not between 0-59
+        Helper method for course time validation - validates minute values for time format.
+        
+        Args:
+            minutes (int): Minute value to validate
+            
+        Raises:
+            ValueError: If minutes is not between 0-59 (inclusive)
         """
         if not (0 <= minutes <= 59):
             raise ValueError(f"Minutes must be between 0-59, got: {minutes}")
 
     def validate_dr_ta_name(self, name):
         """
-        Validates Doctor/TA name.
+        Validates instructor names (Doctor/TA).
         Similar functionality to validate_name but allows for titles like "Dr.", "TA", and "Prof.".
-        Raises ValueError if invalid, returns nothing if valid.
-        Regular Expressions Used
+        Regular expressions are used.
+
+        Args:
+            name (str): The instructor's name to validate
+            
+        Raises:
+            ValueError: If name is invalid
         """
         if not name or not isinstance(name, str):
             raise ValueError("Doctor/TA name must be a non-empty string")
