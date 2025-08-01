@@ -96,14 +96,18 @@ class Processor:
                 invalid_rows = []
                 for row in reader:
                     try:
-                        self.validate_name(row["Full Name"])
                         # Only validate email if the column exists in CSV headers
                         if "University Email" in reader.fieldnames:
                             self.validate_email(row["University Email"])
+                        
+                        # Validate Required Columns
+                        self.validate_name(row["Full Name"])
                         self.validate_university_id(row["University ID"])
                         self.validate_course_code(row["Course Code"])
-                        self.validate_course_time(row["Course Time"])
+                        row["Course Time"] = self.validate_course_time(row["Course Time"])  # Normalize course time format
                         self.validate_dr_ta_name(row["Doctor/TA Name"])
+
+                        # Append valid row if all validations pass
                         valid_rows.append(row)
                     except (ValueError, validators.ValidationError) as error:
                         # Capture the error message
@@ -300,7 +304,7 @@ class Processor:
 
     def validate_course_time(self, course_time):
         """
-        Validates course time format.
+        Validates course time format and returns normalized H:MM - H:MM format.
         Supports formats like H:MM - H:MM, H - H:MM, H to H:MM (minutes optional, - or to separator).
         Regular expressions are used.
 
@@ -309,6 +313,9 @@ class Processor:
 
         Args:
             course_time (str): The course time to validate
+            
+        Returns:
+            str: Normalized course time in H:MM - H:MM format
             
         Raises:
             ValueError: If course time format is invalid
@@ -359,6 +366,11 @@ class Processor:
         if end_minutes:
             minutes_value = int(end_minutes[1:])  # Remove the ":" using 'slicing'
             self.validate_minutes(minutes_value)
+
+        # Format and return normalized time as H:MM - H:MM
+        start_time = f"{start_hour}{start_minutes if start_minutes else ':00'}"
+        end_time = f"{end_hour}{end_minutes if end_minutes else ':00'}"
+        return f"{start_time} - {end_time}"
 
     def validate_hour(self, hour):
         """

@@ -234,10 +234,10 @@ class Exporter:
         
         # Set column widths to prevent text wrapping
         column_widths = [
-            docx.shared.Inches(3.0),  # Name column - wider for long names
-            docx.shared.Inches(2.0),  # ID column
+            docx.shared.Inches(3.5),  # Name column - wider for long names
+            docx.shared.Inches(1.5),  # ID column
             docx.shared.Inches(2.0),  # Course Code column
-            docx.shared.Inches(2.5),  # Time column
+            docx.shared.Inches(3.5),  # Time column
             docx.shared.Inches(3.0)   # Doctor/TA Name column
         ]
         
