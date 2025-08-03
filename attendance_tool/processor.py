@@ -25,6 +25,10 @@ class Processor:
 
         Args:
             file_path (str): Path to the CSV file to process
+            
+        Raises:
+            FileNotFoundError: If file does not exist
+            ValueError: If file is not a CSV file
         """
         self.file_path = file_path
 

@@ -29,6 +29,10 @@ class Exporter:
             valid_rows (list): Valid attendance records
             invalid_rows (list): Invalid records with error info
             title (str, optional): Document title. Defaults to "Attendance Report"
+            
+        Raises:
+            ValueError: If valid_rows/invalid_rows are not lists or contain non-dictionary elements,
+                       or if title is not a string or is empty after trimming whitespace
         """
         self.valid_rows = valid_rows
         self.invalid_rows = invalid_rows
