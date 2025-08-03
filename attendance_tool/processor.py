@@ -107,7 +107,7 @@ class Processor:
                         
                         # Validate Required Columns
                         row["Full Name"] = self.validate_name(row["Full Name"])  # Normalize student name
-                        self.validate_university_id(row["University ID"])
+                        row["University ID"] = self.validate_university_id(row["University ID"])  # Normalize and validate student ID
                         row["Course Code"] = self.validate_course_code(row["Course Code"])  # Normalize course code to uppercase
                         row["Course Time"] = self.validate_course_time(row["Course Time"])  # Normalize course time format
                         row["Doctor/TA Name"] = self.validate_dr_ta_name(row["Doctor/TA Name"])  # Normalize instructor name
@@ -253,9 +253,13 @@ class Processor:
         # Remove extra whitespace
         student_id = student_id.strip()
 
+        # Auto-format if no slash but exactly 9 digits (YYYYXXXXX format)
+        if "/" not in student_id and student_id.isdigit() and len(student_id) == 9:
+            student_id = student_id[:4] + "/" + student_id[4:]
+
         # Check if it contains exactly one forward slash
         if student_id.count("/") != 1:
-            raise ValueError("Student ID must contain exactly one '/' separator")
+            raise ValueError("Student ID must contain exactly one '/' separator or be 9 digits (YYYYXXXXX)")
 
         # Split by forward slash
         year_part, number_part = student_id.split("/")
@@ -275,16 +279,17 @@ class Processor:
         if not number_part.isdigit() or len(number_part) != 5:
             raise ValueError("Student number must be exactly 5 digits")
 
-        # No return needed - function succeeds if no exception is raised
+        # Return the normalized student ID with slash
+        return student_id
 
     def validate_course_code(self, course_code):
         """
         Validates MIU course code format.
-        At least 3 letters + at least 3 numbers + optional additional characters.
+        At least 3 letters + at least 3 numbers + optional additional characters including parentheses.
         Regular expressions are used.
 
         Examples:
-            SWE11004, CSC101, MRK10105-BUS, ETH10104-CSC, BAS13104 Lecture, BAS13104 Tutorial
+            SWE11004, CSC101, MRK10105-BUS, ETH10104-CSC, BAS13104 Lecture, BAS13104 Tutorial, BAS1120301 (Tutorial)
         
         Args:
             course_code (str): The course code to validate
@@ -310,12 +315,12 @@ class Processor:
         if len(course_code) >= 3:
             course_code = course_code[:3].upper() + course_code[3:].title()
 
-        # Atleast 3 letters, then at least 3 digits, then optional letters/numbers/spaces/hyphens
-        if not re.match(r"^[A-Z]{3,}[0-9]{3,}[A-Z0-9\s\-]*$", course_code, re.IGNORECASE):
+        # Atleast 3 letters, then at least 3 digits, then optional letters/numbers/spaces/hyphens/parentheses
+        if not re.match(r"^[A-Z]{3,}[0-9]{3,}[A-Z0-9\s\-()]*$", course_code, re.IGNORECASE):
             raise ValueError(
                 "Course code must start with at least 3 letters, "
                 "followed by at least 3 numbers, "
-                "and optionally more letters/numbers/spaces/hyphens"
+                "and optionally more letters/numbers/spaces/hyphens/parentheses"
             )
 
         # Return the normalized uppercase course code
@@ -325,6 +330,7 @@ class Processor:
         """
         Validates course time format and returns normalized H:MM - H:MM format.
         Supports formats like H:MM - H:MM, H - H:MM, H to H:MM (minutes optional, - or to separator).
+        AM/PM indicators are NOT supported.
         Regular expressions are used.
 
         Examples:
