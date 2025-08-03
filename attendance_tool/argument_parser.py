@@ -29,14 +29,14 @@ def initialize_parser():
     group.add_argument(
         "--word",
         action="store_true",  # No value required after the flag (True Or False whether provided)
-        help="Exports .csv file to .docx document immediately",
+        help="Process CSV data and export attendance report as Word document",
     )
 
     # --pdf argument
     group.add_argument(
         "--pdf",
         action="store_true",  # No value required after the flag (True Or False whether provided)
-        help="Exports .csv file to .pdf document immediately",
+        help="Process CSV data and export attendance report as PDF document",
     )
 
     # --title argument for Word/PDF documents
