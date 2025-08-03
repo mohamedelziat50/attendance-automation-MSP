@@ -89,6 +89,10 @@ class Processor:
             with open(self.file_path) as file:
                 reader = csv.DictReader(file)
 
+                # Strip whitespace from field names, to avoid headers like 'Full Name  '
+                if reader.fieldnames:
+                    reader.fieldnames = [field.strip() for field in reader.fieldnames]
+
                 # Validate CSV structure first - To Avoid KeyError
                 print("Field Names:", reader.fieldnames)
                 self.validate_csv_headers(reader.fieldnames)
@@ -104,7 +108,7 @@ class Processor:
                         # Validate Required Columns
                         row["Full Name"] = self.validate_name(row["Full Name"])  # Normalize student name
                         self.validate_university_id(row["University ID"])
-                        self.validate_course_code(row["Course Code"])
+                        row["Course Code"] = self.validate_course_code(row["Course Code"])  # Normalize course code to uppercase
                         row["Course Time"] = self.validate_course_time(row["Course Time"])  # Normalize course time format
                         row["Doctor/TA Name"] = self.validate_dr_ta_name(row["Doctor/TA Name"])  # Normalize instructor name
 
@@ -291,8 +295,8 @@ class Processor:
         if not course_code or not isinstance(course_code, str):
             raise ValueError("Course code must be a non-empty string")
 
-        # Remove extra whitespace and convert to uppercase for consistency
-        course_code = course_code.strip().upper()
+        # Remove extra whitespace
+        course_code = course_code.strip()
 
         # Check minimum length (3 letters + 3 numbers = 6 characters minimum)
         if len(course_code) < 6:
@@ -302,15 +306,20 @@ class Processor:
         if len(course_code) >= 25:
             raise ValueError("Course code must be less than 26 characters")
 
+        # Simple normalization: uppercase the first 3 letters, keep the rest as is
+        if len(course_code) >= 3:
+            course_code = course_code[:3].upper() + course_code[3:].title()
+
         # Atleast 3 letters, then at least 3 digits, then optional letters/numbers/spaces/hyphens
-        if not re.match(r"^[A-Z]{3,}[0-9]{3,}[A-Z0-9\s\-]*$", course_code):
+        if not re.match(r"^[A-Z]{3,}[0-9]{3,}[A-Z0-9\s\-]*$", course_code, re.IGNORECASE):
             raise ValueError(
                 "Course code must start with at least 3 letters, "
                 "followed by at least 3 numbers, "
                 "and optionally more letters/numbers/spaces/hyphens"
             )
 
-        # No return needed - function succeeds if no exception is raised
+        # Return the normalized uppercase course code
+        return course_code
 
     def validate_course_time(self, course_time):
         """
@@ -340,16 +349,17 @@ class Processor:
             raise ValueError("Course time is too long")
 
         # Pattern to match: hour(optional :minutes) separator hour(optional :minutes)
-        # Supports both " - " and " to " as separators
+        # Supports both " - " and " to " as separators with optional spaces
         """ 
         Regular Expression Explaination
         ([1-9]|1[0-2]) - Matches hours 1-12 (12-hour format), Utilizing OR
         (:[0-5][0-9])? - Optionally (with ?) matches :00 through :59
-        \\s+ - Matches one or more spaces
+        \\s* - Matches zero or more spaces (optional whitespace)
         (-|to) -  Matches either "-" or "to"
+        \\s* - Matches zero or more spaces (optional whitespace)
         """
         match = re.match(
-            r"^([1-9]|1[0-2])(:[0-5][0-9])?\s+(-|to)\s+([1-9]|1[0-2])(:[0-5][0-9])?$",
+            r"^([1-9]|1[0-2])(:[0-5][0-9])?\s*(-|to)\s*([1-9]|1[0-2])(:[0-5][0-9])?$",
             course_time,
         )
         if not match:

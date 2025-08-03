@@ -6,3 +6,7 @@ __pycache__/
 
 # PDF Documents shouldn't be included
 *.pdf
+
+# CSV files shouldn't be included except those in datasets folder
+*.csv
+!datasets/*.csv
