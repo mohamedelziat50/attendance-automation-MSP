@@ -7,6 +7,13 @@ class Exporter:
     """
     Document export class for generating Word and PDF attendance reports.
 
+    Design Note:
+        Helper methods are instance methods because they work together
+        as a cohesive workflow. Using individual helper functions as static methods 
+        wouldn't make sense since they depend on each other and the instance data.
+        These helper methods are meant to work together internally, not to be called from
+        outside, and would likely cause unexpected results if used independently.
+
     Attributes:
         valid_rows (list): Valid attendance records
         invalid_rows (list): Invalid records with error messages

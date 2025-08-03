@@ -7,6 +7,13 @@ class Processor:
     """
     CSV validation and processing class for attendance data.
 
+    Design Note:
+        Validation methods are static methods by design choice.
+        These pure functions don't need instance state. Making them static improves
+        reusability and testability. They can be called independently without
+        creating processor instances and are expected to be used for testing
+        and reuse, outputting expected results.
+
     Attributes:
         file_path (str): Path to the CSV file to process
     """
