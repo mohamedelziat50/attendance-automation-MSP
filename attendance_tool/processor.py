@@ -10,12 +10,12 @@ class Processor:
     Attributes:
         file_path (str): Path to the CSV file to process
     """
-    
+
     # Constructor With a single property: file path
     def __init__(self, file_path):
         """
         Initialize the Processor with CSV file path.
-        
+
         Args:
             file_path (str): Path to the CSV file to process
         """
@@ -26,7 +26,7 @@ class Processor:
     def file_path(self):
         """
         Get the CSV file path.
-        
+
         Returns:
             str: The path to the CSV file
         """
@@ -37,13 +37,13 @@ class Processor:
     def file_path(self, file_path):
         """
         Set CSV file path with validation.
-        
+
         Args:
             file_path (str): Path to the CSV file to process
-            
+
         Returns:
             None: This setter does not return a value
-            
+
         Raises:
             FileNotFoundError: If file does not exist
             ValueError: If file is not a CSV file
@@ -60,10 +60,10 @@ class Processor:
         """
         Returns string representation of CSV data for debugging.
         Handles small-medium sized CSV files (1-5000 rows).
-        
+
         Returns:
             str: Formatted CSV data or appropriate message if file is empty
-            
+
         Raises:
             FileNotFoundError: If CSV file cannot be opened
         """
@@ -86,10 +86,10 @@ class Processor:
     def process(self):
         """
         Validates CSV file and returns valid and invalid data.
-        
+
         Returns:
             tuple: (valid_rows, invalid_rows) as lists of dictionaries
-            
+
         Raises:
             FileNotFoundError: If CSV file cannot be opened
             ValueError: If CSV headers are invalid or missing
@@ -113,13 +113,23 @@ class Processor:
                         # Only validate email if the column exists in CSV headers
                         if "University Email" in reader.fieldnames:
                             self.validate_email(row["University Email"])
-                        
+
                         # Validate Required Columns
-                        row["Full Name"] = self.validate_name(row["Full Name"])  # Normalize student name
-                        row["University ID"] = self.validate_university_id(row["University ID"])  # Normalize and validate student ID
-                        row["Course Code"] = self.validate_course_code(row["Course Code"])  # Normalize course code to uppercase
-                        row["Course Time"] = self.validate_course_time(row["Course Time"])  # Normalize course time format
-                        row["Doctor/TA Name"] = self.validate_dr_ta_name(row["Doctor/TA Name"])  # Normalize instructor name
+                        row["Full Name"] = self.validate_name(
+                            row["Full Name"]
+                        )  # Normalize student name
+                        row["University ID"] = self.validate_university_id(
+                            row["University ID"]
+                        )  # Normalize and validate student ID
+                        row["Course Code"] = self.validate_course_code(
+                            row["Course Code"]
+                        )  # Normalize course code to uppercase
+                        row["Course Time"] = self.validate_course_time(
+                            row["Course Time"]
+                        )  # Normalize course time format
+                        row["Doctor/TA Name"] = self.validate_dr_ta_name(
+                            row["Doctor/TA Name"]
+                        )  # Normalize instructor name
 
                         # Append valid row if all validations pass
                         valid_rows.append(row)
@@ -139,13 +149,13 @@ class Processor:
     def validate_csv_headers(self, fieldnames):
         """
         Validates that all required CSV headers are present.
-        
+
         Args:
             fieldnames (list): List of column headers from CSV file
-            
+
         Returns:
             None: This function does not return a value, it only validates
-            
+
         Raises:
             ValueError: If columns/headers are missing or empty
         """
@@ -177,13 +187,13 @@ class Processor:
         Validates and normalizes a person's full name.
         Automatically capitalizes each word for consistent formatting.
         Regular expressions are used.
-        
+
         Args:
             name (str): The full name to validate
-            
+
         Returns:
             str: Validated and properly capitalized name
-            
+
         Raises:
             ValueError: If name is invalid
         """
@@ -219,13 +229,13 @@ class Processor:
         """
         Validates university email addresses.
         Regular expressions are not used.
-        
+
         Args:
             email (str): The email address to validate
-            
+
         Returns:
             None: This function does not return a value, it only validates
-            
+
         Raises:
             ValueError: If email is invalid or not from required domain
         """
@@ -256,13 +266,13 @@ class Processor:
 
         Examples:
             2023/00824, 2020/34125, 202306246 (auto-formatted to 2023/06246)
-        
+
         Args:
             student_id (str): The student ID to validate
-            
+
         Returns:
             str: Validated and normalized student ID in YYYY/XXXXX format
-            
+
         Raises:
             ValueError: If student ID format is invalid
         """
@@ -278,7 +288,9 @@ class Processor:
 
         # Check if it contains exactly one forward slash
         if student_id.count("/") != 1:
-            raise ValueError("Student ID must contain exactly one '/' separator or be 9 digits (YYYYXXXXX)")
+            raise ValueError(
+                "Student ID must contain exactly one '/' separator or be 9 digits (YYYYXXXXX)"
+            )
 
         # Split by forward slash
         year_part, number_part = student_id.split("/")
@@ -290,7 +302,7 @@ class Processor:
         # Check if year is reasonable (assuming students from atleast 2010 to current year)
         year = int(year_part)
         current_year = datetime.now().year  # Dynamic current year
-        
+
         if year < 2010 or year > current_year:
             raise ValueError(f"Year must be between 2010-{current_year}, got: {year}")
 
@@ -310,13 +322,13 @@ class Processor:
 
         Examples:
             SWE11004, CSC101, MRK10105-BUS, ETH10104-CSC, BAS13104 Lecture, BAS13104 Tutorial, BAS1120301 (Tutorial)
-        
+
         Args:
             course_code (str): The course code to validate
-            
+
         Returns:
             str: Validated and normalized course code with proper capitalization
-            
+
         Raises:
             ValueError: If course code format is invalid
         """
@@ -339,7 +351,9 @@ class Processor:
             course_code = course_code[:3].upper() + course_code[3:].title()
 
         # Atleast 3 letters, then at least 3 digits, then optional letters/numbers/spaces/hyphens/parentheses
-        if not re.match(r"^[A-Z]{3,}[0-9]{3,}[A-Z0-9\s\-()]*$", course_code, re.IGNORECASE):
+        if not re.match(
+            r"^[A-Z]{3,}[0-9]{3,}[A-Z0-9\s\-()]*$", course_code, re.IGNORECASE
+        ):
             raise ValueError(
                 "Course code must start with at least 3 letters, "
                 "followed by at least 3 numbers, "
@@ -361,10 +375,10 @@ class Processor:
 
         Args:
             course_time (str): The course time to validate
-            
+
         Returns:
             str: Normalized course time in H:MM - H:MM format
-            
+
         Raises:
             ValueError: If course time format is invalid
         """
@@ -424,13 +438,13 @@ class Processor:
     def validate_hour(self, hour):
         """
         Helper method for course time validation - validates hour values for 12-hour time format.
-        
+
         Args:
             hour (int): Hour value to validate
-            
+
         Returns:
             None: This function does not return a value, it only validates
-            
+
         Raises:
             ValueError: If hour is not between 1-12 (inclusive)
         """
@@ -440,13 +454,13 @@ class Processor:
     def validate_minutes(self, minutes):
         """
         Helper method for course time validation - validates minute values for time format.
-        
+
         Args:
             minutes (int): Minute value to validate
-            
+
         Returns:
             None: This function does not return a value, it only validates
-            
+
         Raises:
             ValueError: If minutes is not between 0-59 (inclusive)
         """
@@ -462,10 +476,10 @@ class Processor:
 
         Args:
             name (str): The instructor's name to validate
-            
+
         Returns:
             str: Normalized instructor name with appropriate title prefix
-            
+
         Raises:
             ValueError: If name is invalid
         """
@@ -482,9 +496,20 @@ class Processor:
             raise ValueError("Doctor/TA name must be less than 60 characters")
 
         # Check if it's just a title without a name (incomplete)
-        incomplete_titles = ["dr", "prof", "ta", "professor", "doctor", "dr.", "prof.", "ta."]
+        incomplete_titles = [
+            "dr",
+            "prof",
+            "ta",
+            "professor",
+            "doctor",
+            "dr.",
+            "prof.",
+            "ta.",
+        ]
         if name.lower().strip() in incomplete_titles:
-            raise ValueError("Doctor/TA name cannot be just a title, must include actual name")
+            raise ValueError(
+                "Doctor/TA name cannot be just a title, must include actual name"
+            )
 
         # Check for valid characters (letters, spaces, hyphens, apostrophes, periods, parentheses for titles)
         if not re.match(r"^[a-zA-Z\s'.\-()]+$", name):
@@ -506,22 +531,22 @@ class Processor:
     def __normalize_instructor_title(self, name):
         """
         Helper method to detect, standardize, and normalize instructor titles.
-        
+
         Automatically detects existing titles (Dr./Doctor, Prof./Professor, TA) and standardizes
         their format. If no title is detected, automatically adds "Dr." prefix.
-        
+
         Uses word boundary regex patterns to avoid false matches (e.g., "ta" in "Tamer").
-        
+
         Args:
             name (str): The instructor's name to normalize
-            
+
         Returns:
             str: Normalized name with standardized title format:
                 - "Dr." for doctor/dr variations
-                - "Prof." for professor/prof variations  
+                - "Prof." for professor/prof variations
                 - "TA" for ta variations (no period)
                 - "Dr. {name}" for names without detected titles
-                
+
         Examples:
             "john smith" -> "Dr. John Smith"
             "doctor jane doe" -> "Dr. Jane Doe"
@@ -531,26 +556,28 @@ class Processor:
             "DR. SARAH wilson" -> "Dr. Sarah Wilson"
         """
         name_lower = name.lower()
-        
+
         # First, capitalize the entire name to ensure proper case
         name = name.title()
-        
+
         # Then check what type of title exists and standardize accordingly
         # Use word boundaries (\b) to avoid false matches (e.g., "ta" in "Tamer")
-        
-        if re.search(r'\b(doctor|dr)\b', name_lower):
+
+        if re.search(r"\b(doctor|dr)\b", name_lower):
             # Replace any doctor/dr variations with "Dr." - avoid double periods
-            name = re.sub(r'\b(doctor|dr\.?)\b', 'Dr.', name, flags=re.IGNORECASE)
+            name = re.sub(r"\b(doctor|dr\.?)\b", "Dr.", name, flags=re.IGNORECASE)
             # Fix any double periods that might occur
-            name = name.replace('Dr..', 'Dr.')
-        elif re.search(r'\b(professor|prof)\b', name_lower):
+            name = name.replace("Dr..", "Dr.")
+        elif re.search(r"\b(professor|prof)\b", name_lower):
             # Replace any professor/prof variations with "Prof." - avoid double periods
-            name = re.sub(r'\b(professor|prof\.?)\b', 'Prof.', name, flags=re.IGNORECASE)
+            name = re.sub(
+                r"\b(professor|prof\.?)\b", "Prof.", name, flags=re.IGNORECASE
+            )
             # Fix any double periods that might occur
-            name = name.replace('Prof..', 'Prof.')
-        elif re.search(r'\bta\b', name_lower):
+            name = name.replace("Prof..", "Prof.")
+        elif re.search(r"\bta\b", name_lower):
             # Replace any TA variations with "TA" (no dot)
-            name = re.sub(r'\bta\.?\b', 'TA', name, flags=re.IGNORECASE)
+            name = re.sub(r"\bta\.?\b", "TA", name, flags=re.IGNORECASE)
         else:
             # No title found, add "Dr." prefix (name is already capitalized)
             name = f"Dr. {name}"

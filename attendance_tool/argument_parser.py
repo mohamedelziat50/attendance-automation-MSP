@@ -4,10 +4,10 @@ import argparse
 def initialize_parser():
     """
     Configure a customized command line argument parser for attendance processing.
-    
+
     Sets up argument parsing for CSV file processing with Word/PDF export options.
     Supports both GUI mode (no arguments) and command-line export mode.
-    
+
     Returns:
         argparse.ArgumentParser: Configured parser with CSV file, export format, and title arguments
     """
@@ -52,17 +52,17 @@ def initialize_parser():
 def validate_arguments(parser, args):
     """
     Validate parsed command line arguments and determine application mode.
-    
+
     Analyzes the provided arguments to determine whether to run in GUI mode
     or export mode, and validates that required arguments are present for each mode.
-    
+
     Args:
         parser (argparse.ArgumentParser): The argument parser object for error reporting
         args (argparse.Namespace): Parsed command line arguments
-        
+
     Returns:
         str: Application mode - either "gui" or "export"
-        
+
     Raises:
         SystemExit: Via parser.error() if invalid argument combinations are provided
     """
