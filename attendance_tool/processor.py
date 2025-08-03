@@ -24,6 +24,12 @@ class Processor:
     # Getter
     @property
     def file_path(self):
+        """
+        Get the CSV file path.
+        
+        Returns:
+            str: The path to the CSV file
+        """
         return self._file_path
 
     # Setter
@@ -34,6 +40,9 @@ class Processor:
         
         Args:
             file_path (str): Path to the CSV file to process
+            
+        Returns:
+            None: This setter does not return a value
             
         Raises:
             FileNotFoundError: If file does not exist
@@ -134,6 +143,9 @@ class Processor:
         Args:
             fieldnames (list): List of column headers from CSV file
             
+        Returns:
+            None: This function does not return a value, it only validates
+            
         Raises:
             ValueError: If columns/headers are missing or empty
         """
@@ -211,6 +223,9 @@ class Processor:
         Args:
             email (str): The email address to validate
             
+        Returns:
+            None: This function does not return a value, it only validates
+            
         Raises:
             ValueError: If email is invalid or not from required domain
         """
@@ -236,13 +251,17 @@ class Processor:
     def validate_university_id(self, student_id):
         """
         Validates MIU student ID format (YYYY/XXXXX).
+        Auto-formats 9-digit IDs without slashes to YYYY/XXXXX format.
         Regular expressions are not used.
 
         Examples:
-            2023/00824, 2020/34125
+            2023/00824, 2020/34125, 202306246 (auto-formatted to 2023/06246)
         
         Args:
             student_id (str): The student ID to validate
+            
+        Returns:
+            str: Validated and normalized student ID in YYYY/XXXXX format
             
         Raises:
             ValueError: If student ID format is invalid
@@ -286,6 +305,7 @@ class Processor:
         """
         Validates MIU course code format.
         At least 3 letters + at least 3 numbers + optional additional characters including parentheses.
+        Normalizes format with proper capitalization.
         Regular expressions are used.
 
         Examples:
@@ -293,6 +313,9 @@ class Processor:
         
         Args:
             course_code (str): The course code to validate
+            
+        Returns:
+            str: Validated and normalized course code with proper capitalization
             
         Raises:
             ValueError: If course code format is invalid
@@ -405,6 +428,9 @@ class Processor:
         Args:
             hour (int): Hour value to validate
             
+        Returns:
+            None: This function does not return a value, it only validates
+            
         Raises:
             ValueError: If hour is not between 1-12 (inclusive)
         """
@@ -417,6 +443,9 @@ class Processor:
         
         Args:
             minutes (int): Minute value to validate
+            
+        Returns:
+            None: This function does not return a value, it only validates
             
         Raises:
             ValueError: If minutes is not between 0-59 (inclusive)

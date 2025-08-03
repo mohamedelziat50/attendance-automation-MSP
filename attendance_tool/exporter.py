@@ -30,6 +30,12 @@ class Exporter:
     # Getter for valid_rows
     @property
     def valid_rows(self):
+        """
+        Get the list of valid attendance rows.
+        
+        Returns:
+            list: List of dictionaries containing valid attendance data
+        """
         return self._valid_rows
 
     # Setter for valid_rows: Empty Lists are allowed
@@ -40,6 +46,9 @@ class Exporter:
         
         Args:
             valid_rows (list): List of dictionaries containing valid attendance data
+            
+        Returns:
+            None: This setter does not return a value
             
         Raises:
             ValueError: If not a list or contains non-dictionary elements
@@ -54,6 +63,12 @@ class Exporter:
     # Getter for invalid_rows
     @property
     def invalid_rows(self):
+        """
+        Get the list of invalid attendance rows.
+        
+        Returns:
+            list: List of dictionaries containing invalid attendance data with error messages
+        """
         return self._invalid_rows
 
     # Setter for invalid_rows: Empty Lists are allowed
@@ -64,6 +79,9 @@ class Exporter:
         
         Args:
             invalid_rows (list): List of dictionaries containing invalid attendance data
+            
+        Returns:
+            None: This setter does not return a value
             
         Raises:
             ValueError: If not a list or contains non-dictionary elements
@@ -78,6 +96,12 @@ class Exporter:
     # Getter for title
     @property
     def title(self):
+        """
+        Get the document title.
+        
+        Returns:
+            str: The document title used for headers and filenames
+        """
         return self._title
 
     # Setter for title
@@ -88,6 +112,9 @@ class Exporter:
         
         Args:
             title (str): Document title for headers and filenames
+            
+        Returns:
+            None: This setter does not return a value
             
         Raises:
             ValueError: If not a string or empty after trimming whitespace
@@ -203,6 +230,9 @@ class Exporter:
         
         Args:
             document (docx.Document): The Word document object
+            
+        Returns:
+            None: This method modifies the document in place
         """
         # Add heading
         heading = document.add_heading(
@@ -269,6 +299,9 @@ class Exporter:
         Args:
             table (docx.table.Table): The table object to add rows to
             valid (bool): True for valid rows, False for invalid rows
+            
+        Returns:
+            None: This method modifies the table in place
         """
         # Choose which data to process based on valid parameter - Pythonic Ternary Operator!
         for row in (self.valid_rows if valid else self.invalid_rows):
@@ -298,6 +331,9 @@ class Exporter:
         
         Args:
             cells (list): List of table cells to apply margins to
+            
+        Returns:
+            None: This method modifies the cells in place
         """
 
         # Specific Margin Sizes
@@ -324,6 +360,9 @@ class Exporter:
         Args:
             table (docx.table.Table): The table object to apply border color to
             color (str): Hex color code (default "0000FF" for blue)
+            
+        Returns:
+            None: This method modifies the table in place
         """
         tbl = table._tbl
         tblPr = tbl.tblPr
@@ -343,6 +382,9 @@ class Exporter:
         
         Args:
             document (docx.Document): The Word document to add the error log to
+            
+        Returns:
+            None: This method modifies the document in place
         """
         # Add some space before the log
         document.add_paragraph()
