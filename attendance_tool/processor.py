@@ -104,7 +104,7 @@ class Processor:
 
                 # Validate CSV structure first - To Avoid KeyError
                 print("Field Names:", reader.fieldnames)
-                self.validate_csv_headers(reader.fieldnames)
+                Processor.validate_csv_headers(reader.fieldnames)
 
                 valid_rows = []
                 invalid_rows = []
@@ -112,22 +112,22 @@ class Processor:
                     try:
                         # Only validate email if the column exists in CSV headers
                         if "University Email" in reader.fieldnames:
-                            self.validate_email(row["University Email"])
+                            Processor.validate_email(row["University Email"])
 
                         # Validate Required Columns
-                        row["Full Name"] = self.validate_name(
+                        row["Full Name"] = Processor.validate_name(
                             row["Full Name"]
                         )  # Normalize student name
-                        row["University ID"] = self.validate_university_id(
+                        row["University ID"] = Processor.validate_university_id(
                             row["University ID"]
                         )  # Normalize and validate student ID
-                        row["Course Code"] = self.validate_course_code(
+                        row["Course Code"] = Processor.validate_course_code(
                             row["Course Code"]
                         )  # Normalize course code to uppercase
-                        row["Course Time"] = self.validate_course_time(
+                        row["Course Time"] = Processor.validate_course_time(
                             row["Course Time"]
                         )  # Normalize course time format
-                        row["Doctor/TA Name"] = self.validate_dr_ta_name(
+                        row["Doctor/TA Name"] = Processor.validate_dr_ta_name(
                             row["Doctor/TA Name"]
                         )  # Normalize instructor name
 
@@ -146,7 +146,8 @@ class Processor:
         except ValueError as error:
             raise ValueError(f"CSV validation failed: {error}")
 
-    def validate_csv_headers(self, fieldnames):
+    @staticmethod
+    def validate_csv_headers(fieldnames):
         """
         Validates that all required CSV headers are present.
 
@@ -182,7 +183,8 @@ class Processor:
             if not header or header.strip() == "":
                 raise ValueError(f"Empty column header found at position: {i}")
 
-    def validate_name(self, name):
+    @staticmethod
+    def validate_name(name):
         """
         Validates and normalizes a person's full name.
         Automatically capitalizes each word for consistent formatting.
@@ -225,7 +227,8 @@ class Processor:
 
         return name
 
-    def validate_email(self, email):
+    @staticmethod
+    def validate_email(email):
         """
         Validates university email addresses.
         Regular expressions are not used.
@@ -258,7 +261,8 @@ class Processor:
 
         # No return needed - function succeeds if no exception is raised
 
-    def validate_university_id(self, student_id):
+    @staticmethod
+    def validate_university_id(student_id):
         """
         Validates MIU student ID format (YYYY/XXXXX).
         Auto-formats 9-digit IDs without slashes to YYYY/XXXXX format.
@@ -313,7 +317,8 @@ class Processor:
         # Return the normalized student ID with slash
         return student_id
 
-    def validate_course_code(self, course_code):
+    @staticmethod
+    def validate_course_code(course_code):
         """
         Validates MIU course code format.
         At least 3 letters + at least 3 numbers + optional additional characters including parentheses.
@@ -363,7 +368,8 @@ class Processor:
         # Return the normalized uppercase course code
         return course_code
 
-    def validate_course_time(self, course_time):
+    @staticmethod
+    def validate_course_time(course_time):
         """
         Validates course time format and returns normalized H:MM - H:MM format.
         Supports formats like H:MM - H:MM, H - H:MM, H to H:MM (minutes optional, - or to separator).
@@ -418,24 +424,25 @@ class Processor:
         end_minutes = match.group(5)  # Could be None or ":MM"
 
         # Validate hours (1-12 for 12-hour format)
-        self.validate_hour(start_hour)
-        self.validate_hour(end_hour)
+        Processor.validate_hour(start_hour)
+        Processor.validate_hour(end_hour)
 
         # Validate minutes if present
         if start_minutes:
             minutes_value = int(start_minutes[1:])  # Remove the ":" using 'slicing'
-            self.validate_minutes(minutes_value)
+            Processor.validate_minutes(minutes_value)
 
         if end_minutes:
             minutes_value = int(end_minutes[1:])  # Remove the ":" using 'slicing'
-            self.validate_minutes(minutes_value)
+            Processor.validate_minutes(minutes_value)
 
         # Format and return normalized time as H:MM - H:MM
         start_time = f"{start_hour}{start_minutes if start_minutes else ':00'}"
         end_time = f"{end_hour}{end_minutes if end_minutes else ':00'}"
         return f"{start_time} - {end_time}"
 
-    def validate_hour(self, hour):
+    @staticmethod
+    def validate_hour(hour):
         """
         Helper method for course time validation - validates hour values for 12-hour time format.
 
@@ -451,7 +458,8 @@ class Processor:
         if not (1 <= hour <= 12):
             raise ValueError(f"Hour must be between 1-12, got: {hour}")
 
-    def validate_minutes(self, minutes):
+    @staticmethod
+    def validate_minutes(minutes):
         """
         Helper method for course time validation - validates minute values for time format.
 
@@ -467,7 +475,8 @@ class Processor:
         if not (0 <= minutes <= 59):
             raise ValueError(f"Minutes must be between 0-59, got: {minutes}")
 
-    def validate_dr_ta_name(self, name):
+    @staticmethod
+    def validate_dr_ta_name(name):
         """
         Validates and normalizes instructor names (Doctor/TA).
         Similar functionality to validate_name but allows for titles like "Dr.", "TA", and "Prof.".
@@ -523,12 +532,13 @@ class Processor:
             raise ValueError("Doctor/TA name should contain 1-6 words")
 
         # Normalize instructor title and auto-add "Dr." prefix if needed
-        name = self.__normalize_instructor_title(name)
+        name = Processor.__normalize_instructor_title(name)
 
         # Return the potentially modified name
         return name
 
-    def __normalize_instructor_title(self, name):
+    @staticmethod
+    def __normalize_instructor_title(name):
         """
         Helper method to detect, standardize, and normalize instructor titles.
 
