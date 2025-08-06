@@ -5,10 +5,9 @@ This module contains the main GUI interface for the attendance tool.
 It provides a user-friendly graphical interface to process CSV files
 """
 
-import customtkinter as ctk
-from tkinter import filedialog, messagebox
+import customtkinter as ctk, os, ctypes, platform
+from tkinter import PhotoImage, filedialog, messagebox
 from PIL import Image
-import os
 
 # Import the core functionality from the parent package
 from ..processor import Processor
@@ -23,15 +22,75 @@ class AttendanceExporterApp(ctk.CTk):
     """
     GUI application for processing CSV attendance files and exporting to Word/PDF.
     Inherits customtkinter's functionality.
+
+    Attributes:
+        csv_file_path (str): Path to the currently selected CSV file
+        default_title (str): Default title for reports ("Attendance Report")
+        report_title (str): Current title for the report being exported
+
+        # UI Container Elements
+        card_frame (ctk.CTkFrame): Main white card container for all UI elements
+
+        # Logo Elements
+        logo_img (ctk.CTkImage): MSP logo image (when loaded successfully)
+        logo_label (ctk.CTkLabel): Label displaying the logo image
+        logo_frame (ctk.CTkFrame): Fallback frame when logo fails to load
+
+        # Title Input Elements
+        title_frame (ctk.CTkFrame): Container frame for title input section
+        title_label (ctk.CTkLabel): "Title:" label
+        title_entry (ctk.CTkEntry): Text input for custom report title
+
+        # Instruction Elements
+        instruction_label (ctk.CTkLabel): "Select your Attendance Sheet:" instruction
+
+        # Upload Elements
+        upload_img (ctk.CTkImage): Upload button icon image
+        upload_button (ctk.CTkButton): File upload button
+
+        # Export Elements
+        export_label (ctk.CTkLabel): "Export as:" label
+        export_frame (ctk.CTkFrame): Container frame for export buttons
+        word_img (ctk.CTkImage): Word button icon image
+        word_button (ctk.CTkButton): Word export button
+        pdf_img (ctk.CTkImage): PDF button icon image
+        pdf_button (ctk.CTkButton): PDF export button
+
+        # Status Elements
+        status_label (ctk.CTkLabel): Status display showing current operation state
     """
 
+    # Window dimensions constants
+    WINDOW_WIDTH = 400
+    WINDOW_HEIGHT = 650
+
     def __init__(self):
+        # Call the parent constructor
         super().__init__()
 
         # Window configuration
         self.title("MSP Attendance Exporter")
-        self.geometry("400x650")  # Keep current height but optimize spacing
+        self.geometry(f"{self.WINDOW_WIDTH}x{self.WINDOW_HEIGHT}")  # Use constants
         self.resizable(False, False)
+
+        # Center the window on the screen
+        self.__center_window()
+
+        # Set the app's icon (Windows only)
+        try:
+            # Set the app user model ID for proper taskbar icon to work
+            myappid = "msp.attendance.exporter.version"
+
+            # Use Windows Shell32 API to properly identify your application to the Windows taskbar, which should make the custom icon appear correctly in the taskbar.
+            ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
+
+            # Set window icon (favicon/taskbar icon)
+            icon_path = os.path.join(
+                os.path.dirname(os.path.abspath(__file__)), "assets", "app_icon.ico"
+            )
+            self.iconbitmap(icon_path)
+        except Exception as e:
+            print(f"Error setting application icon: {e}")
 
         # Variables to store file path and title
         self.csv_file_path = None
@@ -40,6 +99,22 @@ class AttendanceExporterApp(ctk.CTk):
 
         # Create the UI
         self.__create_widgets()
+
+    def __center_window(self):
+        """Center the window on the screen."""
+        # Update the window to ensure geometry is calculated
+        self.update_idletasks()
+
+        # Get screen dimensions
+        screen_width = self.winfo_screenwidth()
+        screen_height = self.winfo_screenheight()
+
+        # Calculate center position
+        center_x = int((screen_width - self.WINDOW_WIDTH) / 2)
+        center_y = int((screen_height - self.WINDOW_HEIGHT) / 2)
+
+        # Set the window position
+        self.geometry(f"{self.WINDOW_WIDTH}x{self.WINDOW_HEIGHT}+{center_x}+{center_y}")
 
     def __create_widgets(self):
         # Card-like container with white background - optimized padding
@@ -69,7 +144,7 @@ class AttendanceExporterApp(ctk.CTk):
                 self.logo_label = ctk.CTkLabel(
                     self.card_frame, image=self.logo_img, text=""
                 )
-                self.logo_label.pack(pady=(0, 5))  # Small bottom padding
+                self.logo_label.pack(pady=(10, 20))  # Small bottom padding
 
             except Exception as e:
                 self.__create_logo_fallback()
@@ -109,7 +184,7 @@ class AttendanceExporterApp(ctk.CTk):
             font=("Arial", 14),
             text_color="black",
         )
-        self.instruction_label.pack(pady=(8, 5))  # Reduced padding
+        self.instruction_label.pack(pady=(8, 0))  # Reduced padding
 
         # Upload Button - Better styling to match the original
         upload_path = os.path.join(assets_dir, "upload_icon.png")
@@ -138,7 +213,7 @@ class AttendanceExporterApp(ctk.CTk):
                 self.__create_upload_fallback()
         else:
             self.__create_upload_fallback()
-        self.upload_button.pack(pady=10)  # Reduced padding
+        self.upload_button.pack(pady=5)  # Reduced padding
 
         # Export Section
         self.export_label = ctk.CTkLabel(
@@ -214,11 +289,28 @@ class AttendanceExporterApp(ctk.CTk):
         self.status_label = ctk.CTkLabel(
             self.card_frame,
             text="Status:\nReady",
-            text_color="green",
+            text_color="#5D9827",
             font=("Arial", 13),  # Smaller font
             justify="center",
         )
-        self.status_label.pack(pady=15)  # Reduced padding
+        self.status_label.pack(pady=20)  # Reduced padding
+
+    def __get_display_filename(self, file_path):
+        """Extract and truncate filename for display purposes."""
+        filename = file_path.split("/")[-1].split("\\")[-1]  # Handle both / and \ paths
+        # Truncate long filenames
+        if len(filename) > 55:
+            return filename[:17] + "..."
+        else:
+            return filename
+
+    def __reset_status_to_ready(self):
+        """Reset status label to show selected file after successful export."""
+        # After export, there will always be a selected file
+        display_name = self.__get_display_filename(self.csv_file_path)
+        self.status_label.configure(
+            text=f"Selected File:\n{display_name}", text_color="#007BFF"
+        )
 
     def __create_logo_fallback(self):
         """Create fallback logo when image fails to load."""
@@ -291,14 +383,7 @@ class AttendanceExporterApp(ctk.CTk):
         )
         if file_path:
             self.csv_file_path = file_path
-            filename = file_path.split("/")[-1].split("\\")[
-                -1
-            ]  # Handle both / and \ paths
-            # Truncate long filenames
-            if len(filename) > 55:
-                display_name = filename[:17] + "..."
-            else:
-                display_name = filename
+            display_name = self.__get_display_filename(file_path)
             self.status_label.configure(
                 text=f"Selected File:\n{display_name}", text_color="#007BFF"
             )
@@ -350,6 +435,9 @@ class AttendanceExporterApp(ctk.CTk):
             messagebox.showinfo(
                 "Success", f"Export completed successfully!\nFile: {filename}"
             )
+
+            # Reset status to "Ready" after 5 seconds
+            self.after(5000, self.__reset_status_to_ready)
 
         except FileNotFoundError as e:
             error_msg = f"File not found: {e}"
