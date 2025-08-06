@@ -5,6 +5,7 @@
 from attendance_tool.processor import Processor
 from attendance_tool.exporter import Exporter
 from attendance_tool.argument_parser import initialize_parser, validate_arguments
+from attendance_tool.gui import launch_gui
 
 
 def main():
@@ -18,9 +19,8 @@ def main():
     mode = validate_arguments(parser, args)
 
     # GUI Mode:
-    if mode == "gui":
-        print("Launching GUI...")
-        # TODO: Implement GUI functionality
+    if mode == "gui":  
+        launch_gui()
         return
 
     # Export Mode:
