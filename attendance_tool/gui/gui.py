@@ -5,8 +5,8 @@ This module contains the main GUI interface for the attendance tool.
 It provides a user-friendly graphical interface to process CSV files
 """
 
-import customtkinter as ctk, os, ctypes, platform
-from tkinter import PhotoImage, filedialog, messagebox
+import os, ctypes, customtkinter as ctk
+from tkinter import filedialog, messagebox
 from PIL import Image
 
 # Import the core functionality from the parent package
