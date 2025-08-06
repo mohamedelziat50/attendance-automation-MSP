@@ -134,7 +134,7 @@ class Exporter:
             raise ValueError("Title must be a string")
         if not title.strip():
             raise ValueError("Title cannot be empty")
-        self._title = title
+        self._title = title.strip()
 
     def export_word(self):
         """

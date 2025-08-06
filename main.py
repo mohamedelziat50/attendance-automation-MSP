@@ -29,13 +29,8 @@ def main():
         processor = Processor(args.csv_file)
         valid_rows, invalid_rows = processor.process()
 
+        # Print the file being processed on console
         print(f"Processing file: {processor.file_path}")
-        print("=======VALID=========")
-        for row in valid_rows:
-            print(row, end="\n\n")
-        print("=======INVALID=========")
-        for row in invalid_rows:
-            print(row, end="\n\n")
 
         # Initialize the exporter with title from command line arguments
         exporter = Exporter(valid_rows, invalid_rows, args.title)

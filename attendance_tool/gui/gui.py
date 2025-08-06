@@ -1,10 +1,3 @@
-"""
-GUI Module for Attendance Automation Tool
-
-This module contains the main GUI interface for the attendance tool.
-It provides a user-friendly graphical interface to process CSV files
-"""
-
 import os, ctypes, customtkinter as ctk
 from tkinter import filedialog, messagebox
 from PIL import Image
@@ -14,27 +7,25 @@ from ..processor import Processor
 from ..exporter import Exporter
 
 # Configure CustomTkinter
-ctk.set_appearance_mode("light")
-ctk.set_default_color_theme("blue")
+ctk.set_appearance_mode("light")  # For Light/Gray Background Behind The Root
 
 
 class AttendanceExporterApp(ctk.CTk):
     """
     GUI application for processing CSV attendance files and exporting to Word/PDF.
-    Inherits customtkinter's functionality.
+    Inherits CustomTkinter's functionality.
 
     Attributes:
         csv_file_path (str): Path to the currently selected CSV file
-        default_title (str): Default title for reports ("Attendance Report")
         report_title (str): Current title for the report being exported
 
         # UI Container Elements
         card_frame (ctk.CTkFrame): Main white card container for all UI elements
 
         # Logo Elements
-        logo_img (ctk.CTkImage): MSP logo image (when loaded successfully)
-        logo_label (ctk.CTkLabel): Label displaying the logo image
-        logo_frame (ctk.CTkFrame): Fallback frame when logo fails to load
+        logo_img (ctk.CTkImage): MSP logo image (created only when image loads successfully)
+        logo_label (ctk.CTkLabel): Label displaying the logo image or text fallback
+        logo_frame (ctk.CTkFrame): Fallback frame (created only when logo image fails to load)
 
         # Title Input Elements
         title_frame (ctk.CTkFrame): Container frame for title input section
@@ -45,15 +36,15 @@ class AttendanceExporterApp(ctk.CTk):
         instruction_label (ctk.CTkLabel): "Select your Attendance Sheet:" instruction
 
         # Upload Elements
-        upload_img (ctk.CTkImage): Upload button icon image
+        upload_img (ctk.CTkImage): Upload button icon (created only when image loads successfully)
         upload_button (ctk.CTkButton): File upload button
 
         # Export Elements
         export_label (ctk.CTkLabel): "Export as:" label
         export_frame (ctk.CTkFrame): Container frame for export buttons
-        word_img (ctk.CTkImage): Word button icon image
+        word_img (ctk.CTkImage): Word button icon (created only when image loads successfully)
         word_button (ctk.CTkButton): Word export button
-        pdf_img (ctk.CTkImage): PDF button icon image
+        pdf_img (ctk.CTkImage): PDF button icon (created only when image loads successfully)
         pdf_button (ctk.CTkButton): PDF export button
 
         # Status Elements
@@ -69,33 +60,19 @@ class AttendanceExporterApp(ctk.CTk):
         super().__init__()
 
         # Window configuration
-        self.title("MSP Attendance Exporter")
+        self.title("MSP Attendance Exporter")  # Window Title
         self.geometry(f"{self.WINDOW_WIDTH}x{self.WINDOW_HEIGHT}")  # Use constants
-        self.resizable(False, False)
+        self.resizable(False, False)  # Disable resizing
 
         # Center the window on the screen
         self.__center_window()
 
-        # Set the app's icon (Windows only)
-        try:
-            # Set the app user model ID for proper taskbar icon to work
-            myappid = "msp.attendance.exporter.version"
-
-            # Use Windows Shell32 API to properly identify your application to the Windows taskbar, which should make the custom icon appear correctly in the taskbar.
-            ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
-
-            # Set window icon (favicon/taskbar icon)
-            icon_path = os.path.join(
-                os.path.dirname(os.path.abspath(__file__)), "assets", "app_icon.ico"
-            )
-            self.iconbitmap(icon_path)
-        except Exception as e:
-            print(f"Error setting application icon: {e}")
+        # Set up the application icon (Windows taskbar and window icon)
+        self.__setup_app_icon()
 
         # Variables to store file path and title
         self.csv_file_path = None
-        self.default_title = "Attendance Report"
-        self.report_title = self.default_title
+        self.report_title = ""
 
         # Create the UI
         self.__create_widgets()
@@ -116,8 +93,28 @@ class AttendanceExporterApp(ctk.CTk):
         # Set the window position
         self.geometry(f"{self.WINDOW_WIDTH}x{self.WINDOW_HEIGHT}+{center_x}+{center_y}")
 
+    def __setup_app_icon(self):
+        """Set up the application icon for Windows taskbar and window."""
+        try:
+            # Set the app user model ID for proper taskbar icon to work
+            myappid = "msp.attendance.exporter.version"
+
+            # Use Windows Shell32 API to properly identify your application to the Windows taskbar,
+            # which should make the custom icon appear correctly in the taskbar.
+            ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
+
+            # Set window icon (favicon/taskbar icon)
+            icon_path = os.path.join(
+                os.path.dirname(os.path.abspath(__file__)), "assets", "app_icon.ico"
+            )
+            self.iconbitmap(icon_path)
+        except Exception as e:
+            print(f"Error setting application icon: {e}")
+
     def __create_widgets(self):
-        # Card-like container with white background - optimized padding
+        """Create and initialize all UI components."""
+
+        # Card-like (Root-like but is a child of the app itself) container with white background - optimized padding
         self.card_frame = ctk.CTkFrame(self, corner_radius=20, fg_color="white")
         self.card_frame.pack(
             padx=10, pady=10, fill="both", expand=True
@@ -127,7 +124,26 @@ class AttendanceExporterApp(ctk.CTk):
         current_dir = os.path.dirname(os.path.abspath(__file__))
         assets_dir = os.path.join(current_dir, "assets")
 
-        # MSP Logo - Handle large images by pre-processing with PIL
+        # Create the MSP logo
+        self.__create_logo(assets_dir)
+
+        # Create the title input section
+        self.__create_title_input()
+
+        # Create the instruction label
+        self.__create_instruction_label()
+
+        # Create the upload button
+        self.__create_upload_button(assets_dir)
+
+        # Create export section
+        self.__create_export_section(assets_dir)
+
+        # Create status label
+        self.__create_status_label()
+
+    def __create_logo(self, assets_dir):
+        """Create MSP logo with fallback handling."""
         logo_path = os.path.join(assets_dir, "msp_logo.png")
 
         if os.path.exists(logo_path):
@@ -136,8 +152,10 @@ class AttendanceExporterApp(ctk.CTk):
                 pil_image = Image.open(logo_path)
 
                 # Make logo smaller to save space
-                target_size = (240, 240)  # Reduced from 270x270
-                pil_image = pil_image.resize(target_size, Image.Resampling.LANCZOS)
+                target_size = (240, 240)
+                pil_image = pil_image.resize(
+                    target_size, Image.Resampling.LANCZOS
+                )  # LANCZOS for high-quality
 
                 # Now create CustomTkinter image
                 self.logo_img = ctk.CTkImage(light_image=pil_image, size=target_size)
@@ -151,18 +169,21 @@ class AttendanceExporterApp(ctk.CTk):
         else:
             self.__create_logo_fallback()
 
-        # Remove the separate title labels since the logo contains the text
-        # (The original design has the text in the logo itself)
-
-        # Report Title Input - Label and Entry on same line
+    def __create_title_input(self):
+        """Create title input section."""
+        # Report Title Container: Label and Input (e.g CTk.Entry) on same line
         self.title_frame = ctk.CTkFrame(self.card_frame, fg_color="transparent")
         self.title_frame.pack(pady=(0, 8))  # Reduced padding
 
+        # Title Label
         self.title_label = ctk.CTkLabel(
             self.title_frame, text="Title:", font=("Arial", 14), text_color="black"
         )
-        self.title_label.pack(side="left", padx=(0, 10))
+        self.title_label.pack(
+            side="left", padx=(0, 10)
+        )  # Align label to left with padding
 
+        # Title Entry/Input
         self.title_entry = ctk.CTkEntry(
             self.title_frame,
             placeholder_text="Enter report title...",
@@ -174,10 +195,10 @@ class AttendanceExporterApp(ctk.CTk):
             border_width=1,
             text_color="black",
         )
-        self.title_entry.insert(0, self.default_title)
         self.title_entry.pack(side="left")
 
-        # Instruction
+    def __create_instruction_label(self):
+        """Create file selection instruction label."""
         self.instruction_label = ctk.CTkLabel(
             self.card_frame,
             text="Select your Attendance Sheet:",
@@ -186,8 +207,10 @@ class AttendanceExporterApp(ctk.CTk):
         )
         self.instruction_label.pack(pady=(8, 0))  # Reduced padding
 
-        # Upload Button - Better styling to match the original
+    def __create_upload_button(self, assets_dir):
+        """Create the upload button with icon and fallback handling."""
         upload_path = os.path.join(assets_dir, "upload_icon.png")
+
         if os.path.exists(upload_path):
             try:
                 pil_image = Image.open(upload_path)
@@ -196,7 +219,9 @@ class AttendanceExporterApp(ctk.CTk):
                 image_size = (195, 50)
                 button_size = (195, 50)
 
-                pil_image = pil_image.resize(image_size, Image.Resampling.LANCZOS)
+                pil_image = pil_image.resize(
+                    image_size, Image.Resampling.LANCZOS
+                )  # LANCZOS for high-quality
                 self.upload_img = ctk.CTkImage(light_image=pil_image, size=image_size)
                 self.upload_button = ctk.CTkButton(
                     self.card_frame,
@@ -206,16 +231,35 @@ class AttendanceExporterApp(ctk.CTk):
                     height=button_size[1],
                     fg_color="white",
                     hover_color="#f5f5f5",
-                    # border_width=1, border_color="#c0c0c0",  # Thicker border, more visible color
                     command=self.__upload_file,
                 )
             except Exception:
                 self.__create_upload_fallback()
         else:
             self.__create_upload_fallback()
+
         self.upload_button.pack(pady=5)  # Reduced padding
 
-        # Export Section
+    def __get_display_filename(self, file_path):
+        """Extract and truncate filename for UI display purposes."""
+        filename = file_path.split("/")[-1].split("\\")[-1]  # Handle both / and \ paths
+        # Truncate long filenames
+        if len(filename) > 55:
+            return filename[:17] + "..."
+        else:
+            return filename
+
+    def __show_selected_file_status(self):
+        """Update status label with selected file information."""
+        # After export, there will always be a selected file
+        display_name = self.__get_display_filename(self.csv_file_path)
+        self.status_label.configure(
+            text=f"Selected File:\n{display_name}", text_color="#007BFF"
+        )
+
+    def __create_export_section(self, assets_dir):
+        """Create export section with Label, Word and PDF buttons."""
+        # Export Section Label
         self.export_label = ctk.CTkLabel(
             self.card_frame, text="Export as:", font=("Arial", 14), text_color="black"
         )
@@ -225,19 +269,36 @@ class AttendanceExporterApp(ctk.CTk):
         self.export_frame = ctk.CTkFrame(self.card_frame, fg_color="transparent")
         self.export_frame.pack()
 
-        # Word button - Icon with text label
+        # Create Word and PDF export buttons
+        self.__create_word_button(assets_dir)
+        self.__create_pdf_button(assets_dir)
+
+    def __create_status_label(self):
+        """Create status display label."""
+        self.status_label = ctk.CTkLabel(
+            self.card_frame,
+            text="Status:\nReady",
+            text_color="#5D9827",
+            font=("Arial", 13),  # Smaller font
+            justify="center",
+        )
+        self.status_label.pack(pady=20)  # Reduced padding
+
+    def __create_word_button(self, assets_dir):
+        """Create Word export button with icon and fallback handling."""
         word_path = os.path.join(assets_dir, "word_icon.png")
+
         if os.path.exists(word_path):
             try:
                 pil_image = Image.open(word_path)
                 pil_image = pil_image.resize(
                     (45, 45), Image.Resampling.LANCZOS
-                )  # Slightly smaller icon
+                )  # LANCZOS for high-quality
                 self.word_img = ctk.CTkImage(light_image=pil_image, size=(45, 45))
                 self.word_button = ctk.CTkButton(
                     self.export_frame,
-                    image=self.word_img,
-                    text="Word",
+                    image=self.word_img,  # Word Icon image
+                    text="Word",  # Text below icon
                     width=90,
                     height=80,  # Smaller button
                     fg_color="white",
@@ -253,10 +314,13 @@ class AttendanceExporterApp(ctk.CTk):
                 self.__create_word_fallback()
         else:
             self.__create_word_fallback()
+
         self.word_button.grid(row=0, column=0, padx=10)
 
-        # PDF button - Icon with text label
+    def __create_pdf_button(self, assets_dir):
+        """Create PDF export button with icon and fallback handling."""
         pdf_path = os.path.join(assets_dir, "pdf_icon.png")
+
         if os.path.exists(pdf_path):
             try:
                 pil_image = Image.open(pdf_path)
@@ -266,8 +330,8 @@ class AttendanceExporterApp(ctk.CTk):
                 self.pdf_img = ctk.CTkImage(light_image=pil_image, size=(45, 45))
                 self.pdf_button = ctk.CTkButton(
                     self.export_frame,
-                    image=self.pdf_img,
-                    text="PDF",
+                    image=self.pdf_img,  # PDF Icon image
+                    text="PDF",  # Text below icon
                     width=90,
                     height=80,  # Smaller button
                     fg_color="white",
@@ -283,48 +347,24 @@ class AttendanceExporterApp(ctk.CTk):
                 self.__create_pdf_fallback()
         else:
             self.__create_pdf_fallback()
+
         self.pdf_button.grid(row=0, column=1, padx=10)
 
-        # Status - with multi-line support and better formatting
-        self.status_label = ctk.CTkLabel(
-            self.card_frame,
-            text="Status:\nReady",
-            text_color="#5D9827",
-            font=("Arial", 13),  # Smaller font
-            justify="center",
-        )
-        self.status_label.pack(pady=20)  # Reduced padding
-
-    def __get_display_filename(self, file_path):
-        """Extract and truncate filename for display purposes."""
-        filename = file_path.split("/")[-1].split("\\")[-1]  # Handle both / and \ paths
-        # Truncate long filenames
-        if len(filename) > 55:
-            return filename[:17] + "..."
-        else:
-            return filename
-
-    def __reset_status_to_ready(self):
-        """Reset status label to show selected file after successful export."""
-        # After export, there will always be a selected file
-        display_name = self.__get_display_filename(self.csv_file_path)
-        self.status_label.configure(
-            text=f"Selected File:\n{display_name}", text_color="#007BFF"
-        )
-
     def __create_logo_fallback(self):
-        """Create fallback logo when image fails to load."""
+        """Create text-based logo fallback."""
         self.logo_frame = ctk.CTkFrame(
             self.card_frame, width=140, height=140, corner_radius=70
         )
         self.logo_frame.pack(pady=(15, 8))
         self.logo_label = ctk.CTkLabel(
-            self.logo_frame, text="MSP\nTech Club", font=("Arial", 16, "bold")
+            self.logo_frame,
+            text="MSP\nTech Club\nMisr International University",
+            font=("Arial", 16, "bold"),
         )
         self.logo_label.pack(expand=True)
 
     def __create_upload_fallback(self):
-        """Create fallback upload button when icon fails to load."""
+        """Create text-based upload button fallback."""
         self.upload_button = ctk.CTkButton(
             self.card_frame,
             text="📤 Upload",
@@ -339,7 +379,7 @@ class AttendanceExporterApp(ctk.CTk):
         )
 
     def __create_word_fallback(self):
-        """Create fallback Word button when icon fails to load."""
+        """Create text-based Word button fallback."""
         self.word_button = ctk.CTkButton(
             self.export_frame,
             text="Word",
@@ -355,7 +395,7 @@ class AttendanceExporterApp(ctk.CTk):
         )
 
     def __create_pdf_fallback(self):
-        """Create fallback PDF button when icon fails to load."""
+        """Create text-based PDF button fallback."""
         self.pdf_button = ctk.CTkButton(
             self.export_frame,
             text="PDF",
@@ -371,22 +411,17 @@ class AttendanceExporterApp(ctk.CTk):
         )
 
     def __upload_file(self):
-        """
-        Handle CSV file selection dialog.
-
-        Returns:
-            None
-        """
+        """Handle CSV file selection dialog."""
+        #  Only CSV files shown by default (unless user switches to "All files")
         file_path = filedialog.askopenfilename(
             title="Select CSV File",
             filetypes=[("CSV Files", "*.csv"), ("All files", "*.*")],
         )
+
+        # If a file was selected, update the GUI's attribute for file path, and UI status label
         if file_path:
             self.csv_file_path = file_path
-            display_name = self.__get_display_filename(file_path)
-            self.status_label.configure(
-                text=f"Selected File:\n{display_name}", text_color="#007BFF"
-            )
+            self.__show_selected_file_status()  # Use existing function to update status
 
     def __export_file(self, file_type):
         """
@@ -394,17 +429,27 @@ class AttendanceExporterApp(ctk.CTk):
 
         Args:
             file_type (str): Export format ('word' or 'pdf')
-
-        Returns:
-            None
         """
         if not self.csv_file_path:
-            messagebox.showerror("Error", "Please select a CSV file first.")
+            # Pop Up error if no file selected
+            self.status_label.configure(
+                text="Error:\nNo CSV file selected", text_color="#DC3545"
+            )
             return
 
         # Get the report title from user input, with fallback to default
-        user_title = self.title_entry.get().strip()
-        self.report_title = user_title if user_title else self.default_title
+        user_title = self.title_entry.get()
+
+        # Validate title - block if it's only spaces
+        if user_title and user_title.isspace():
+            self.status_label.configure(
+                text="Error:\nTitle cannot be only spaces", text_color="#DC3545"
+            )
+            return
+        
+        # If user provided a valid title, use it; otherwise, keep the current report title empty (Exporter will handle empty titles)
+        if user_title and user_title.strip():
+            self.report_title = user_title
 
         # Update status
         self.status_label.configure(
@@ -417,8 +462,12 @@ class AttendanceExporterApp(ctk.CTk):
             processor = Processor(self.csv_file_path)
             valid_rows, invalid_rows = processor.process()
 
-            # Create exporter
-            exporter = Exporter(valid_rows, invalid_rows, self.report_title)
+            # Create exporter - pass title only if user provided one
+            if self.report_title:
+                exporter = Exporter(valid_rows, invalid_rows, self.report_title)
+            else:
+                # Let Exporter use its default title by not passing the title parameter
+                exporter = Exporter(valid_rows, invalid_rows)
 
             # Export based on type
             if file_type == "word":
@@ -426,39 +475,30 @@ class AttendanceExporterApp(ctk.CTk):
             elif file_type == "pdf":
                 filename = exporter.export_pdf()
 
-            # Update status to success - shorter text
-            self.status_label.configure(
-                text=f"Export Complete!\n{file_type.upper()} file created",
-                text_color="green",
-            )
+            # Reset status to show selected file (export is complete)
+            self.__show_selected_file_status()
 
+            # Show success pop-up with filename
+            display_filename = self.__get_display_filename(filename)
             messagebox.showinfo(
-                "Success", f"Export completed successfully!\nFile: {filename}"
+                "Export Complete!",
+                f"Successfully exported {file_type.upper()} file:\n{display_filename}"
             )
-
-            # Reset status to "Ready" after 5 seconds
-            self.after(5000, self.__reset_status_to_ready)
 
         except FileNotFoundError as e:
-            error_msg = f"File not found: {e}"
             self.status_label.configure(
-                text="Error:\nFile Not Found", text_color="#DC3545"
+                text=f"File not found:\n {str(e)}", text_color="#DC3545"
             )
-            messagebox.showerror("File Error", error_msg)
 
         except ValueError as e:
-            error_msg = f"Data validation error: {e}"
             self.status_label.configure(
-                text="Error:\nData Validation Failed", text_color="#DC3545"
+                text=f"Data validation error:\n {str(e)}", text_color="#DC3545"
             )
-            messagebox.showerror("Data Error", error_msg)
 
         except Exception as e:
-            error_msg = f"Unexpected error: {e}"
             self.status_label.configure(
-                text="Error:\nExport Failed", text_color="#DC3545"
+                text=f"Unexpected error:\n {str(e)}", text_color="#DC3545"
             )
-            messagebox.showerror("Error", error_msg)
 
 
 def launch_gui():

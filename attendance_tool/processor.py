@@ -114,7 +114,6 @@ class Processor:
                     reader.fieldnames = [field.strip() for field in reader.fieldnames]
 
                 # Validate CSV structure first - To Avoid KeyError
-                print("Field Names:", reader.fieldnames)
                 Processor.validate_csv_headers(reader.fieldnames)
 
                 valid_rows = []
