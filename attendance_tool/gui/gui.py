@@ -1,4 +1,4 @@
-import os, ctypes, customtkinter as ctk
+import os, ctypes, customtkinter as ctk, subprocess, platform
 from tkinter import filedialog, messagebox
 from PIL import Image
 
@@ -249,6 +249,23 @@ class AttendanceExporterApp(ctk.CTk):
         else:
             return filename
 
+    def __open_exported_file_location(self, filepath):
+        """Open exported file's location in system file explorer."""
+        try:
+            if platform.system() == "Windows":
+                subprocess.run(['explorer', '/select,', filepath])
+            elif platform.system() == "Darwin":  # macOS
+                subprocess.run(['open', '-R', filepath])
+            else:  # Linux
+                subprocess.run(['xdg-open', os.path.dirname(filepath)])
+        except Exception as e:
+            print(f"Could not open file location: {e}")
+            # Show fallback message if opening location fails
+            messagebox.showwarning(
+                "Cannot Open Location", 
+                f"Could not open file location.\nFile saved to:\n{filepath}"
+            )
+
     def __show_selected_file_status(self):
         """Update status label with selected file information."""
         # After export, there will always be a selected file
@@ -256,6 +273,21 @@ class AttendanceExporterApp(ctk.CTk):
         self.status_label.configure(
             text=f"Selected File:\n{display_name}", text_color="#007BFF"
         )
+
+    def __enable_export_buttons(self):
+        """Re-enable both export buttons."""
+        self.word_button.configure(state="normal")
+        self.pdf_button.configure(state="normal")
+
+    def __disable_export_buttons(self):
+        """
+        Disable both export buttons to prevent spam clicking.
+        CustomTkinter automatically changes text color to gray when state="disabled".
+        This overrides the original text_color settings (blue for Word, red for PDF).
+
+        """
+        self.word_button.configure(state="disabled")
+        self.pdf_button.configure(state="disabled")
 
     def __create_export_section(self, assets_dir):
         """Create export section with Label, Word and PDF buttons."""
@@ -452,11 +484,21 @@ class AttendanceExporterApp(ctk.CTk):
             self.report_title = user_title
 
         # Update status
+        format_type = "Word" if file_type == "word" else "PDF"
         self.status_label.configure(
-            text=f"Status:\nExporting to {file_type.upper()}...", text_color="orange"
+            text=f"Status:\nExporting to {format_type}...", text_color="orange"
         )
         self.update()  # Force GUI update
 
+        # Disable export buttons to prevent spam clicking
+        self.__disable_export_buttons()
+
+        # Simple 700ms delay for smoother UI experience
+        # This allows the user to see the "Exporting..." status before the export starts
+        self.after(700, lambda: self.__start_export(file_type))
+
+    def __start_export(self, file_type):
+        """Starts exports after UI delay."""
         try:
             # Process file
             processor = Processor(self.csv_file_path)
@@ -478,12 +520,17 @@ class AttendanceExporterApp(ctk.CTk):
             # Reset status to show selected file (export is complete)
             self.__show_selected_file_status()
 
-            # Show success pop-up with filename
+            # Show success pop-up with filename and option to open location
             display_filename = self.__get_display_filename(filename)
-            messagebox.showinfo(
+            format_type = "Word" if file_type == "word" else "PDF"
+            result = messagebox.askyesno(
                 "Export Complete!",
-                f"Successfully exported {file_type.upper()} file:\n{display_filename}"
+                f"Successfully exported {format_type} file:\n{display_filename}\n\nWould you like to open the file location?",
+                icon='question'
             )
+            
+            if result:  # User clicked "Yes"
+                self.__open_exported_file_location(filename)
 
         except FileNotFoundError as e:
             self.status_label.configure(
@@ -499,6 +546,10 @@ class AttendanceExporterApp(ctk.CTk):
             self.status_label.configure(
                 text=f"Unexpected error:\n {str(e)}", text_color="#DC3545"
             )
+
+        finally:
+            # Always re-enable export buttons, regardless of success or failure
+            self.__enable_export_buttons()
 
 
 def launch_gui():
