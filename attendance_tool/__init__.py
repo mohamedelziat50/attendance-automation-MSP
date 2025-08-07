@@ -9,12 +9,16 @@ Modules:
 - exporter: Word and PDF report generation
 - argument_parser: Command-line interface handling
 
+Subpackages:
+- gui: Graphical user interface components
+
 """
 
 # Import the main classes and functions to expose them for easy access
 # This allows users to import everything they need from the package directly
 # Instead of importing from submodules: from attendance_tool.processor import Processor
 # They can now do: from attendance_tool import Processor
+# Doesn't replace the module-level imports - it adds package-level convenience imports.
 
 from .processor import Processor
 from .exporter import Exporter
