@@ -1,11 +1,11 @@
-# 3rd Party Packages
-...
-
-# Our own package related, Syntax: from package.module import class/function
-from attendance_tool.processor import Processor
-from attendance_tool.exporter import Exporter
-from attendance_tool.argument_parser import initialize_parser, validate_arguments
-from attendance_tool.gui import launch_gui
+# Our Own Package: Exposed functions and classes through __init__.py
+from attendance_tool import (
+    Processor,
+    Exporter,
+    initialize_parser,
+    validate_arguments,
+    launch_gui,
+)
 
 
 def main():
@@ -19,7 +19,8 @@ def main():
     mode = validate_arguments(parser, args)
 
     # GUI Mode:
-    if mode == "gui":  
+    if mode == "gui":
+        print("Launching GUI...")
         launch_gui()
         return
 
