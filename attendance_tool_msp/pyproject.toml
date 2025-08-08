@@ -16,7 +16,7 @@ dependencies = [
     "pillow",
 ]
 
-[project.links]
+[project.urls]
 Repository = "https://github.com/mohamedelziat50/attendance-automation-MSP"
 Documentation = "https://yourdomain.com/docs"
 

@@ -1,6 +1,6 @@
-# attendance_tool_msp
+# Attendance Tool - MSP
 
-A comprehensive Python package for automated attendance processing, validation, and professional report generation. Supports both command-line and GUI workflows for educators, organizations, and technical sessions.
+An easy-to-use Python package for automated attendance processing, validation, and professional report generation. Built mainly for Microsoft Student Partners Tech Club (MSP), but works for any technical session or event at Misr International University (MIU).
 
 ## Features
 - **CSV Attendance Processing:** Validate and process attendance sheets with robust error handling.
@@ -12,7 +12,7 @@ A comprehensive Python package for automated attendance processing, validation, 
 
 ## Installation
 ```bash
-pip install attendance_tool_msp
+pip install attendance-tool-msp
 ```
 
 ## Usage
@@ -65,7 +65,7 @@ mode = validate_arguments(parser, args)
 ```
 
 ## Requirements
-- Python 3.8+
+- Python 3.10+
 - python-docx
 - docx2pdf (optional, for PDF export)
 - validators
