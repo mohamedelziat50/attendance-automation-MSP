@@ -9,7 +9,7 @@ class Exporter:
 
     Design Note:
         Helper methods are instance methods because they work together
-        as a cohesive workflow. Using individual helper functions as static methods 
+        as a cohesive workflow. Using individual helper functions as static methods
         wouldn't make sense since they depend on each other and the instance data.
         These helper methods are meant to work together internally, not to be called from
         outside, and would likely cause unexpected results if used independently.
@@ -29,7 +29,7 @@ class Exporter:
             valid_rows (list): Valid attendance records
             invalid_rows (list): Invalid records with error info
             title (str, optional): Document title. Defaults to "Attendance Report"
-            
+
         Raises:
             ValueError: If valid_rows/invalid_rows are not lists or contain non-dictionary elements,
                        or if title is not a string or is empty after trimming whitespace
@@ -251,7 +251,7 @@ class Exporter:
         """
         # Add heading
         heading = document.add_heading(
-            f"{self.title} - Microsoft Students Partners Club (MSP)",
+            f"{self.title}",
         )
 
         # Style the heading

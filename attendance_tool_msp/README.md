@@ -17,21 +17,36 @@ pip install attendance_tool_msp
 
 ## Usage
 
-### API Example
+### Core Workflow: Processor + Exporter
+Use `Processor` and `Exporter` together to process attendance data and generate reports:
 ```python
-from attendance_tool_msp import Processor, Exporter, launch_gui
+from attendance_tool_msp import Processor, Exporter
 
-# Process attendance data
 processor = Processor("data.csv")
 valid_rows, invalid_rows = processor.process()
 
-# Export to Word and PDF
 exporter = Exporter(valid_rows, invalid_rows, title="Session Report")
-exporter.export_word("report.docx")
-exporter.export_pdf("report.pdf")
+filename_word = exporter.export_word()
+filename_pdf = exporter.export_pdf()
+```
 
-# Launch the GUI
+### Simple GUI Launch
+If you prefer not to handle arguments or workflow, just launch the GUI with a single line:
+```python
+from attendance_tool_msp import launch_gui
+
 launch_gui()
+```
+
+### Command-Line Integration
+For CLI usage, use the argument parser helpers:
+```python
+from attendance_tool_msp import initialize_parser, validate_arguments
+
+parser = initialize_parser()
+args = parser.parse_args()
+mode = validate_arguments(parser, args)
+# Use mode to determine workflow (see documentation for details)
 ```
 
 ## Requirements
