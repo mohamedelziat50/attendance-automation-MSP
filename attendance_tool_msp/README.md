@@ -15,7 +15,24 @@ A comprehensive Python package for automated attendance processing, validation, 
 pip install attendance_tool_msp
 ```
 
+
+
 ## Usage
+
+### CSV Format Requirements
+
+Your CSV file **must** contain the following columns (headers):
+
+- `Full Name`
+- `University ID`
+- `Course Code`
+- `Course Time`
+- `Doctor/TA Name`
+
+These columns are required for successful processing. If any are missing or empty, the tool will raise an error and the file will not be processed.
+
+> **Note:** Columns like `timestamp` and `email` are **not required**. The tool does not expect or require a timestamp column. The `University Email` column is only validated if present, but is not mandatory.
+
 
 ### Core Workflow: Processor + Exporter
 Use `Processor` and `Exporter` together to process attendance data and generate reports:
