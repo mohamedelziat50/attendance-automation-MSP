@@ -1,5 +1,13 @@
+# NOTE:
+# For local development with a src/ folder, use:
+#   from attendance_tool_msp.src.attendance_tool_msp import (...)
+# For installed packages (via pip), use:
+#   from attendance_tool_msp import (...)
+# The top-level import is standard for users installing your package from PyPI/TestPyPI.
+
+# Previously (Before UV Restructuring): from attendance_tool_msp import (...)
 # Our Own Package: Exposed functions and classes through __init__.py
-from attendance_tool import (
+from attendance_tool_msp.src.attendance_tool_msp import (
     Processor,
     Exporter,
     initialize_parser,
