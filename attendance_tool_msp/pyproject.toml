@@ -1,6 +1,6 @@
 [project]
 name = "attendance-tool-msp"
-version = "0.1.0"
+version = "1.0.0"
 description = "Automated attendance processing and reporting tool for MSP technical sessions."
 readme = "README.md"
 license = "MIT"
@@ -17,8 +17,8 @@ dependencies = [
 ]
 
 [project.urls]
+Documentation = "https://attendance-automation-msp.readthedocs.io/"
 Repository = "https://github.com/mohamedelziat50/attendance-automation-MSP"
-Documentation = "https://yourdomain.com/docs"
 
 [build-system]
 requires = ["uv_build>=0.8.6,<0.9.0"]
