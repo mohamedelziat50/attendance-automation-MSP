@@ -1,0 +1,8 @@
+sphinx
+sphinx_autodoc_typehints
+sphinx_rtd_theme
+python-docx
+docx2pdf
+validators
+customtkinter
+pillow
