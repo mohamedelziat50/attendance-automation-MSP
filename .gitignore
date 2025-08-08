@@ -13,3 +13,17 @@ __pycache__/
 
 # .pytest_cache directory is a hidden directory created by the pytest testing framework in Python. Its primary purpose is to store cached information between test runs, which can improve the performance and functionality of pytest
 .pytest_cache/
+
+# Python cache and build files
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+dist/
+build/
+
+# Sphinx build output
+docs/build/
+docs/source/_build/
+docs/source/_static/
+docs/source/_templates/
