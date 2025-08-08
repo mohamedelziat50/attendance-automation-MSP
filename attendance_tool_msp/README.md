@@ -15,8 +15,6 @@ A comprehensive Python package for automated attendance processing, validation, 
 pip install attendance_tool_msp
 ```
 
-
-
 ## Usage
 
 ### CSV Format Requirements
@@ -74,10 +72,9 @@ mode = validate_arguments(parser, args)
 - customtkinter
 - pillow
 
-## Documentation
-- [Homepage](https://github.com/mohamedelziat50/attendance-automation-MSP)
-- [Repository](https://github.com/mohamedelziat50/attendance-automation-MSP)
+## Documentation & Repository
+- [Documentation](https://github.com/mohamedelziat50/attendance-automation-MSP)
+- [Repository](https://yourdomain.com/docs)
 
-## License
-MIT License
-See the LICENSE file for details.
+## MIT License
+For the most up-to-date license and project details, visit the [GitHub LICENSE](https://github.com/mohamedelziat50/attendance-automation-MSP/blob/main/LICENSE).
