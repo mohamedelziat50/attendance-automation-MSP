@@ -1,6 +1,5 @@
-
-attendance_tool_msp package
-===========================
+attendance\_tool\_msp package
+=============================
 
 .. automodule:: attendance_tool_msp
    :members:
