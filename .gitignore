@@ -4,6 +4,12 @@
 # PDF Documents shouldn't be included
 *.pdf
 
+# Word Documents Inside Notes are allowed
+!notes/*.docx
+
+# PDF Documents Inside Notes are allowed
+!notes/*.pdf
+
 # CSV files shouldn't be included except those in datasets folder
 *.csv
 !datasets/*.csv
