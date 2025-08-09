@@ -2,6 +2,8 @@
 
 An easy-to-use Python package for automated attendance processing, validation, and professional report generation. Built mainly for Microsoft Student Partners Tech Club (MSP), but works for any technical session or event at Misr International University (MIU).
 
+This package is heavily tested with pytest and clearly documented on Read the Docs. For more details, including example datasets and the full development journey, check out the repository.
+
 ## Features
 - **CSV Attendance Processing:** Validate and process attendance sheets with robust error handling.
 - **Data Validation:** Detects invalid records, missing fields, and edge cases.
@@ -29,7 +31,7 @@ Your CSV file **must** contain the following columns (headers):
 
 These columns are required for successful processing. If any are missing or empty, the tool will raise an error and the file will not be processed.
 
-> **Note:** Columns like `timestamp` and `email` are **not required**. The tool does not expect or require a timestamp column. The `University Email` column is only validated if present, but is not mandatory.
+> **Note:** Columns like `Timestamp` and `Email` are **not required**. The tool does not expect or require a timestamp column. The `University Email` column is only validated if present, but is not mandatory.
 
 
 ### Core Workflow: Processor + Exporter
@@ -67,14 +69,14 @@ mode = validate_arguments(parser, args)
 ## Requirements
 - Python 3.10+
 - python-docx
-- docx2pdf (optional, for PDF export)
+- docx2pdf
 - validators
 - customtkinter
 - pillow
 
 ## Documentation & Repository
-- [Documentation](https://github.com/mohamedelziat50/attendance-automation-MSP)
-- [Repository](https://yourdomain.com/docs)
+- [Repository](https://github.com/mohamedelziat50/attendance-automation-MSP)
+- [Documentation](https://attendance-automation-msp.readthedocs.io/)
 
 ## MIT License
 For the most up-to-date license and project details, visit the [GitHub LICENSE](https://github.com/mohamedelziat50/attendance-automation-MSP/blob/main/LICENSE).
