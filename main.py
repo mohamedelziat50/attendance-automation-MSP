@@ -12,8 +12,9 @@ from attendance_tool_msp.src.attendance_tool_msp import (
     Exporter,
     initialize_parser,
     validate_arguments,
-    launch_gui,
 )
+
+from gui import launch_gui  # Importing the GUI launch function
 
 
 def main():

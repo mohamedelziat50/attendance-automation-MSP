@@ -9,9 +9,6 @@ Modules:
 - exporter: Word and PDF report generation
 - argument_parser: Command-line interface handling
 
-Subpackages:
-- gui: Graphical user interface components
-
 """
 
 # Import the main classes and functions to expose them for easy access
@@ -23,12 +20,10 @@ Subpackages:
 from .processor import Processor
 from .exporter import Exporter
 from .argument_parser import initialize_parser, validate_arguments
-from .gui import launch_gui
 
 __all__ = [
     "Processor",
     "Exporter",
     "initialize_parser",
     "validate_arguments",
-    "launch_gui",
 ]

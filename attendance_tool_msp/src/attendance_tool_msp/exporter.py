@@ -1,6 +1,6 @@
 import docx, docx.shared, docx.oxml, os
 from datetime import datetime
-from docx2pdf import convert
+# from docx2pdf import convert
 
 
 class Exporter:
@@ -185,59 +185,59 @@ class Exporter:
             # Raised possibly because file is open, and we're trying to save it
             raise PermissionError(error)
 
-    def export_pdf(self):
-        """
-        Generate a PDF document by converting a Word document.
-        The temporary Word document is automatically deleted after conversion.
+    # def export_pdf(self):
+    #     """
+    #     Generate a PDF document by converting a Word document.
+    #     The temporary Word document is automatically deleted after conversion.
 
-        Returns:
-            str: The file path of the generated PDF document
+    #     Returns:
+    #         str: The file path of the generated PDF document
 
-        Raises:
-            PermissionError: If Word document creation fails due to file access issues
-            Exception: If Word document creation fails or PDF conversion fails
-        """
-        # First create the Word document
-        try:
-            word_filename = self.export_word()
-        except PermissionError as error:
-            raise PermissionError(
-                f"Failed to create Word document for PDF conversion: {error}"
-            )
-        except Exception as error:
-            raise Exception(f"Error creating Word document for PDF conversion: {error}")
+    #     Raises:
+    #         PermissionError: If Word document creation fails due to file access issues
+    #         Exception: If Word document creation fails or PDF conversion fails
+    #     """
+    #     # First create the Word document
+    #     try:
+    #         word_filename = self.export_word()
+    #     except PermissionError as error:
+    #         raise PermissionError(
+    #             f"Failed to create Word document for PDF conversion: {error}"
+    #         )
+    #     except Exception as error:
+    #         raise Exception(f"Error creating Word document for PDF conversion: {error}")
 
-        # Convert .docx to .pdf (replace extension)
-        pdf_filename = word_filename.replace(".docx", ".pdf")
-        try:
-            # Utilize docx2pdf package's convert method
-            convert(word_filename, pdf_filename)
-        except Exception as error:
-            # Check if PDF was actually created despite the error
-            if os.path.exists(pdf_filename):
-                # This is a common issue with docx2pdf on Windows!
-                # The error com_error(-2147023170, 'The remote procedure call failed.')
-                # often happens when Microsoft Word is busy or has COM interface issues,
-                # but the conversion actually succeeds.
-                print(f"Conversion completed with minor issues: {error}")
-            # Clean up & delete Word file if conversion truly failed
-            else:
-                try:
-                    os.remove(word_filename)
-                except OSError:
-                    pass  # Ignore cleanup errors
-                raise Exception(f"Failed to convert .docx to .pdf: {error}")
+    #     # Convert .docx to .pdf (replace extension)
+    #     pdf_filename = word_filename.replace(".docx", ".pdf")
+    #     try:
+    #     # Utilize docx2pdf package's convert method (commented out)
+    #         convert(word_filename, pdf_filename)
+    #     except Exception as error:
+    #         # Check if PDF was actually created despite the error
+    #         if os.path.exists(pdf_filename):
+    #             # This is a common issue with docx2pdf on Windows! (commented out)
+    #             # The error com_error(-2147023170, 'The remote procedure call failed.')
+    #             # often happens when Microsoft Word is busy or has COM interface issues,
+    #             # but the conversion actually succeeds.
+    #             print(f"Conversion completed with minor issues: {error}")
+    #         # Clean up & delete Word file if conversion truly failed
+    #         else:
+    #             try:
+    #                 os.remove(word_filename)
+    #             except OSError:
+    #                 pass  # Ignore cleanup errors
+    #             raise Exception(f"Failed to convert .docx to .pdf: {error}")
 
-        # Clean up - delete the temporary Word document after successful conversion
-        try:
-            os.remove(word_filename)
-            print(f"Temporary Word document '{word_filename}' deleted.")
-        except OSError as error:
-            print(
-                f"Warning: Could not delete temporary Word file '{word_filename}': {error}"
-            )
+    #     # Clean up - delete the temporary Word document after successful conversion
+    #     try:
+    #         os.remove(word_filename)
+    #         print(f"Temporary Word document '{word_filename}' deleted.")
+    #     except OSError as error:
+    #         print(
+    #             f"Warning: Could not delete temporary Word file '{word_filename}': {error}"
+    #         )
 
-        return pdf_filename
+    #     return pdf_filename
 
     def __add_document_heading(self, document):
         """

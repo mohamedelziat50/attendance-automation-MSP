@@ -148,19 +148,19 @@ def test_export_word():
     os.remove(filename)
 
 
-def test_export_pdf():
-    """
-    Test PDF document export.
+# def test_export_pdf():
+#     """
+#     Test PDF document export.
     
-    Note: PDF conversion may display Windows COM error messages (0x800706be/0x800706ba)
-    due to Microsoft Word interface issues, but the PDF is still created successfully
-    and the test will pass.
-    """
+#     Note: PDF conversion may display Windows COM error messages (0x800706be/0x800706ba)
+#     due to Microsoft Word interface issues, but the PDF is still created successfully
+#     and the test will pass.
+#     """
     
-    exporter = Exporter(valid_rows, invalid_rows, "PDF Test")
+#     exporter = Exporter(valid_rows, invalid_rows, "PDF Test")
 
-    filename = exporter.export_pdf()
-    assert filename.endswith(".pdf")
-    assert os.path.exists(filename)
-    assert os.path.getsize(filename) > 0
-    os.remove(filename)
+#     filename = exporter.export_pdf()
+#     assert filename.endswith(".pdf")
+#     assert os.path.exists(filename)
+#     assert os.path.getsize(filename) > 0
+#     os.remove(filename)
