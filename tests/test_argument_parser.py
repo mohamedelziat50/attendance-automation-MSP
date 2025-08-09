@@ -1,4 +1,4 @@
-from attendance_tool.argument_parser import initialize_parser, validate_arguments
+from attendance_tool_msp.src.attendance_tool_msp import initialize_parser, validate_arguments
 from pytest import raises
 import argparse
 

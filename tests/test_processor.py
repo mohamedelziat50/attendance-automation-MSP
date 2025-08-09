@@ -1,4 +1,4 @@
-from attendance_tool.processor import Processor
+from attendance_tool_msp.src.attendance_tool_msp import Processor
 from pytest import raises
 
 # Existing file with mixed valid and invalid data

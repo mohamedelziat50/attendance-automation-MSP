@@ -1,5 +1,4 @@
-from attendance_tool.exporter import Exporter
-from attendance_tool.processor import Processor
+from attendance_tool_msp.src.attendance_tool_msp import Processor, Exporter
 from pytest import raises
 import os
 
