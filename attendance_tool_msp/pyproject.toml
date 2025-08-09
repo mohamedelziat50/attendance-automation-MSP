@@ -1,6 +1,6 @@
 [project]
 name = "attendance-tool-msp"
-version = "1.0.1"
+version = "1.0.2"
 description = "Automated attendance processing and reporting tool for MSP technical sessions."
 readme = "README.md"
 license = "MIT"

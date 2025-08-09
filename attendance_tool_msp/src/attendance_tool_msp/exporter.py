@@ -430,7 +430,7 @@ class Exporter:
                 if not student_name.strip():
                     # Default value 'Unknown'
                     if row["University ID"]:
-                        student_name = f"Student with ID: {row["University ID"]}"
+                        student_name = f'Student with ID: {row["University ID"]}'
                     else:
                         student_name = f"Unknown Student"
 
