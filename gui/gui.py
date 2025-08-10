@@ -2,6 +2,11 @@
 Purpose Of This Package/Branch:
     Convert GUI App to Real Program - Python to exe to setup wizard
     https://www.youtube.com/watch?v=p3tSLatmGvU
+
+Admin Priveleges for the app to work correctly
+ IMP NOTE: pyinstaller .spec, instead of running a cmd
+because i specified a .manifest file & admin attribute inside
+next time you create a setup
 """
 
 import sys, os, ctypes, customtkinter as ctk, subprocess, platform
