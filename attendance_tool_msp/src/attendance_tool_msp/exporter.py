@@ -475,10 +475,18 @@ class Exporter:
         now = datetime.now()
         timestamp = f"{now.year}{now.month:02d}{now.day:02d}_{now.hour:02d}{now.minute:02d}{now.second:02d}"
 
-        # Create filename
-        filename = f"{clean_title}_{timestamp}.docx"
+        # Determine Desktop directory, fallback to platform's home if missing
+        home_dir = os.path.expanduser("~")
+        desktop_dir = os.path.join(home_dir, "Desktop")
+        if os.path.exists(desktop_dir):
+            export_dir = desktop_dir
+        else:
+            export_dir = home_dir
+
+        # Create filename in export directory
+        filename = os.path.join(export_dir, f"{clean_title}_{timestamp}.docx")
 
         # Use when testing, and uncomment above.
-        # filename = f"demo.docx"
+        # filename = os.path.join(export_dir, "demo.docx")
 
         return filename
