@@ -11,9 +11,13 @@
 	<a href="https://attendance-automation-msp.readthedocs.io/">
 		<img src="https://img.shields.io/badge/ReadTheDocs-online-f25123" alt="ReadTheDocs">
 	</a>
-	<a href="https://cs50.harvard.edu/certificates/your-certificate-link">
-		<img src="https://img.shields.io/badge/CS50P-Certificate-01a4f1" alt="CS50P Certificate">
+	<a href="https://docs.google.com/forms/d/19Yr79Zj9nwbu76-deXBJqYttGGCyzbok7AIZX19zFtM/template/preview">
+    <img src="https://img.shields.io/badge/Google%20Forms-Template-01a4f1" alt="Google Forms Template">
 	</a>
+	<a href="https://cs50.harvard.edu/certificates/36cfc1ad-7e8f-4be1-bfa2-2cdda3db14e0">
+		<img src="https://img.shields.io/badge/CS50P-Certificate-f25123" alt="CS50P Certificate">
+	</a>
+</a>
 	<br>
 	<a href="#-standalone-app-details">
 		<img src="https://img.shields.io/badge/Download%20Standalone%20App-AttendanceToolMSP_1.0.3_setup-7fba00" alt="Download Standalone App">
@@ -28,9 +32,11 @@
 2. [📄 CSV Format Requirements](#-csv-format-requirements)
 3. [🖥️ How It Looks: GUI, CLI & Documents](#how-it-looks-preview)
 4. [🧪 Tests & Datasets Preview](#-tests--datasets-preview)
-5. [📦 PyPI & Documentation Links](#-pypi--documentation-links)
+5. [📦 Quick Access Links](#-quick-access-links)
 6. [💾 Standalone App Details](#-standalone-app-details)
-7. [📚 Notes & References](#-notes--references)
+7. [🛠️ Local Package Development](#local-package-development)
+8. [🤝 Open Source & Contributions](#-open-source--contributions)
+9. [📚 Notes & References](#-notes--references)
 
 ---
 
@@ -42,7 +48,7 @@
 Attendance data gathering for technical sessions at Misr International University, including MSP Tech Club, was time-consuming and error-prone. This tool automates the process by:
 
 
-- Accepting Google Forms CSV exports as input (see [CSV Format Requirements](#-csv-format-requirements) below; works with any CSV file containing the required headers)
+- Accepting Google Forms CSV exports as input (see [CSV Format Requirements](#-csv-format-requirements) below; works with any CSV file containing the required headers; a [Google Forms Template is available here](https://docs.google.com/forms/d/19Yr79Zj9nwbu76-deXBJqYttGGCyzbok7AIZX19zFtM/template/preview))
 - Validating and normalizing data (course code, time, university ID, etc.)
 - Exporting formatted Word/PDF documents as required by the university
 - Handling edge cases and missing data with clear validation logs
@@ -55,6 +61,7 @@ Attendance data gathering for technical sessions at Misr International Universit
 
 ## 📄 CSV Format Requirements
 
+> Need a quick start? Use our [Google Forms Template](https://docs.google.com/forms/d/19Yr79Zj9nwbu76-deXBJqYttGGCyzbok7AIZX19zFtM/template/preview) to generate compatible CSV files.
 
 Your CSV file **must** contain the following columns (headers), named exactly as shown:
 
@@ -118,11 +125,13 @@ This will automatically discover and run all sample and edge case tests, providi
 
 ---
 
-## 📦 PyPI & Documentation Links
+## 📦 Quick Access Links
 
 - **PyPI Package:** [attendance-tool-msp](https://pypi.org/project/attendance-tool-msp/)
 - **Documentation:** [ReadTheDocs](https://attendance-automation-msp.readthedocs.io/)
-- **CS50P Certificate:** [View Certificate](https://cs50.harvard.edu/certificates/your-certificate-link)
+- **Google Forms Template:** [Access Template](https://docs.google.com/forms/d/19Yr79Zj9nwbu76-deXBJqYttGGCyzbok7AIZX19zFtM/template/preview)
+- **CS50P Certificate:** [View Certificate](https://cs50.harvard.edu/certificates/36cfc1ad-7e8f-4be1-bfa2-2cdda3db14e0)
+ - **CS50P Final Project Video:** [CS50P Final Project Video - Attendance Automation Tool MSP](https://youtu.be/f-6z_AavnPo)
 
 ---
 
@@ -146,6 +155,57 @@ For non-developers, a professional setup wizard is available:
 
 
 ---
+
+<a id="local-package-development"></a>
+## 🛠️ Local Package Development 
+
+This project uses [uv](https://github.com/astral-sh/uv) for fast, modern Python dependency management: making setup simple and reproducible for open source development.
+
+
+### To set up your environment after cloning (from the project root):
+
+**1. Install uv (if not already installed):**
+```bash
+pip install uv
+```
+
+**2. Create a virtual environment:**
+```bash
+uv venv
+```
+
+**3. Activate the virtual environment:**
+```bash
+.venv\Scripts\activate
+```
+
+**4. Install dependencies from `pyproject.toml`:**
+```bash
+uv pip install -r attendance_tool_msp/pyproject.toml
+```
+
+**5. Verify dependencies are installed:**
+```bash
+uv pip list
+```
+
+> This installs the dependencies (using `-r` flag: "requirements") listed in `pyproject.toml` inside your virtual environment, so you can add features, fix bugs, and run tests easily. Files are designed for local development of the package in this repository.
+
+
+In VS Code, also select the `.venv` interpreter from the bottom right corner to ensure your terminal and IDE use the same environment:
+
+<img width="710" height="151" alt="Image" src="https://github.com/user-attachments/assets/1b5d6b2b-91f1-4a7a-bf34-dc703af6a631" />
+
+---
+
+## 🤝 Open Source & Contributions
+
+This project is open-source and welcomes community involvement! You can:
+- Open issues for bugs or feature requests
+- Fork the repository and submit pull requests (PRs) for new features or fixes
+- Help improve documentation and usability
+
+Every contribution makes the project better for everyone. Thank you for the support!
 
 ## 📚 Notes & References
 
