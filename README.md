@@ -26,7 +26,7 @@
 
 1. [📋 Project Overview](#-project-overview)
 2. [📄 CSV Format Requirements](#-csv-format-requirements)
-3. [🖥️ How It Looks: GUI, CLI & Documents](#-how-it-looks-gui-cli--documents)
+3. [🖥️ How It Looks: GUI, CLI & Documents](#how-it-looks-preview)
 4. [🧪 Tests & Datasets Preview](#-tests--datasets-preview)
 5. [📦 PyPI & Documentation Links](#-pypi--documentation-links)
 6. [💾 Standalone App Details](#-standalone-app-details)
@@ -42,13 +42,13 @@
 Attendance data gathering for technical sessions at Misr International University, including MSP Tech Club, was time-consuming and error-prone. This tool automates the process by:
 
 
-- Accepting Google Forms CSV exports as input
+- Accepting Google Forms CSV exports as input (see [CSV Format Requirements](#-csv-format-requirements) below; works with any CSV file containing the required headers)
 - Validating and normalizing data (course code, time, university ID, etc.)
 - Exporting formatted Word/PDF documents as required by the university
 - Handling edge cases and missing data with clear validation logs
-- Providing both CLI and GUI interfaces for flexibility
-- Designed for both developers (as a PyPI package, subsystem for MSP's website/system) and non-developers (standalone setup wizard)
-- Heavily tested with `pytest` and multiple sample datasets
+- Providing both CLI and GUI interfaces for flexibility (see [How It Looks: GUI, CLI & Documents](#how-it-looks-preview) below)
+- Designed for both developers (as a [PyPI package](https://pypi.org/project/attendance-tool-msp/), subsystem for MSP's website/system) and non-developers (standalone setup wizard; see [Standalone App Details](#-standalone-app-details) below)
+- Heavily tested with `pytest` and multiple sample datasets (see [Tests & Datasets Preview](#-tests--datasets-preview) below)
 - Fully documented on [ReadTheDocs](https://attendance-automation-msp.readthedocs.io/)
 
 ---
@@ -71,7 +71,7 @@ These columns are required for successful processing. If any are missing or empt
 
 ---
 
-
+<a id="how-it-looks-preview"></a>
 ## 🖥️ How It Looks: GUI, CLI & Documents
 
 > The following commands are intended for local development of this package after cloning this repository. For package usage, please refer to the [PyPI package page](https://pypi.org/project/attendance-tool-msp/). These commands are not required when using the standalone app (just double-click the app to run it).
@@ -88,17 +88,17 @@ python main.py <file.csv> --pdf --title <title>              # Export mode
 ### GUI Preview
 Modern, user-friendly interface for selecting attendance sheets and export options.
 
-![GUI Preview](https://github.com/user-attachments/assets/672f0692-5520-4827-bbd0-28f9bb56b0d4)
+![GUI Preview](https://github.com/user-attachments/assets/2550dd5b-df63-431f-9593-d76053a10ecd)
 
 ### Exported Document Preview
 Shows a sample exported document with normalized/validated data and a log for any missing or incorrect fields.
 
-![Exported Document Preview](https://github.com/user-attachments/assets/dd84b1fc-9e30-4921-ac88-1beb43c35c33)
+![Exported Document Preview](https://github.com/user-attachments/assets/b0ea7ac4-bdf3-437e-9051-a874ccf122da)
 
 ### CLI Preview
 Flexible command-line automation for exporting, formatting, and validating attendance data.
 
-![CLI Preview](https://github.com/user-attachments/assets/203bcd66-c7f5-4724-ba24-01192f928757)
+![CLI Preview](https://github.com/user-attachments/assets/c7337f85-5fe9-4524-925c-41122c452c0d)
 
 ## 🧪 Tests & Datasets Preview
 
@@ -114,20 +114,21 @@ Extensive edge case testing using `pytest`:
 
 This will automatically discover and run all sample and edge case tests, providing a summary of results.
 
-![Test Suite Preview](https://github.com/user-attachments/assets/7064447d-d558-401a-a9ea-24b07a82c6d4)
+![Test Suite Preview](https://github.com/user-attachments/assets/d4a87fc4-248a-4f4e-9ce7-0b46a8c5f447)
 
 ---
 
 ## 📦 PyPI & Documentation Links
 
 - **PyPI Package:** [attendance-tool-msp](https://pypi.org/project/attendance-tool-msp/)
-- **Documentation:** [ReadTheDocs](https://attendance-tool-msp.readthedocs.io/en/latest/)
+- **Documentation:** [ReadTheDocs](https://attendance-automation-msp.readthedocs.io/)
 - **CS50P Certificate:** [View Certificate](https://cs50.harvard.edu/certificates/your-certificate-link)
 
 ---
 
 ## 💾 Standalone App Details
 
+> The standalone app requires administrator privileges to export files (e.g., saving Word documents). This is a standard requirement for file operations in some Windows environments. Rest assured, the app is safe and only requests these permissions to save your exported documents securely.
 
 For non-developers, a professional setup wizard is available:
 
@@ -135,7 +136,7 @@ For non-developers, a professional setup wizard is available:
 
 - Only the **Word** export functionality is distributed in the standalone app for simplicity and reliability.
 
-    ![Setup Wizard Preview](https://github.com/user-attachments/assets/21c10e7b-953c-480a-94f3-80b405ef44ba)
+    ![Setup Wizard Preview](https://github.com/user-attachments/assets/0a436620-5b05-4cc4-8dd9-9cdc47c45b31)
 
 - **Note:** When you run the installer, Windows may show a "Windows protected your PC" warning. This happens because the installer was created by me and I do not yet have a trusted certificate authority to sign the app (Publisher: Unknown Publisher). This is common for new or independent software developers.
 
