@@ -139,7 +139,7 @@ This will automatically discover and run all sample and edge case tests, providi
 
 ## 💾 Standalone App Details
 
-> The standalone app requires administrator privileges to export files (e.g., saving Word documents). This is a standard requirement for file operations in some Windows environments. Rest assured, the app is safe and only requests these permissions to save your exported documents securely.
+> The standalone app is designed for non-developers who want a simple, professional setup experience. It is distributed as a Windows installer and can also be run on Ubuntu Linux using Wine. Please read the instructions below for your operating system.
 
 For non-developers, a professional setup wizard is available:
 
@@ -148,6 +148,8 @@ For non-developers, a professional setup wizard is available:
 - Only the **Word** export functionality is distributed in the standalone app for simplicity and reliability.
 
 ### 💻 Windows 
+
+> The standalone app requires administrator privileges to export files (e.g., saving Word documents). This is a standard requirement for file operations in some Windows environments. Rest assured, the app is safe and only requests these permissions to save your exported documents securely.
 
 ![Setup Wizard Preview](https://github.com/user-attachments/assets/0a436620-5b05-4cc4-8dd9-9cdc47c45b31)
 
@@ -187,6 +189,9 @@ cd /path/to/your/file
 wine AttendanceToolMSP_1.0.3_setup.exe
 ```
 This should launch the Windows installer inside Ubuntu.
+
+> **Tested on Windows natively and on Ubuntu (using [Oracle VirtualBox](https://www.virtualbox.org/) for virtualization).**  
+> See screenshots: [Ubuntu Package Tested](images/Ubuntu%20Package%20Tested.jpg) & [Ubuntu Standalone Tested](images/Ubuntu%20Standalone%20Tested.jpg)
 
 ---
 
