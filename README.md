@@ -56,6 +56,8 @@ Attendance data gathering for technical sessions at Misr International Universit
 - Designed for both developers (as a [PyPI package](https://pypi.org/project/attendance-tool-msp/), subsystem for MSP's website/system) and non-developers (standalone setup wizard; see [Standalone App Details](#-standalone-app-details) below)
 - Heavily tested with `pytest` and multiple sample datasets (see [Tests & Datasets Preview](#-tests--datasets-preview) below)
 - Fully documented on [ReadTheDocs](https://attendance-automation-msp.readthedocs.io/)
+- Tested on Windows natively and on Ubuntu Linux (using [Oracle VirtualBox](https://www.virtualbox.org/) for virtualization).  
+  See screenshots: [Ubuntu Package Tested](images/Ubuntu%20Package%20Tested.jpg) & [Ubuntu Standalone Tested](images/Ubuntu%20Standalone%20Tested.jpg)
 
 ---
 
@@ -145,14 +147,46 @@ For non-developers, a professional setup wizard is available:
 
 - Only the **Word** export functionality is distributed in the standalone app for simplicity and reliability.
 
-    ![Setup Wizard Preview](https://github.com/user-attachments/assets/0a436620-5b05-4cc4-8dd9-9cdc47c45b31)
+### 💻 Windows 
 
-- **Note:** When you run the installer, Windows may show a "Windows protected your PC" warning. This happens because the installer was created by me and I do not yet have a trusted certificate authority to sign the app (Publisher: Unknown Publisher). This is common for new or independent software developers.
+![Setup Wizard Preview](https://github.com/user-attachments/assets/0a436620-5b05-4cc4-8dd9-9cdc47c45b31)
 
-	<img width="450" alt="Image" src="https://github.com/user-attachments/assets/c64d49f3-9150-4254-9cc7-82874b59b029" />
+**Note:** When you run the installer, Windows may show a "Windows protected your PC" warning. This happens because the installer was created by me and I do not yet have a trusted certificate authority to sign the app (Publisher: Unknown Publisher). This is common for new or independent software developers.
 
-- To proceed, click **More info** and then **Run anyway**. Rest assured, the app is safe to use and will not harm your computer.
+<img width="450" alt="Image" src="https://github.com/user-attachments/assets/c64d49f3-9150-4254-9cc7-82874b59b029" />
 
+To proceed, click **More info** and then **Run anyway**. Rest assured, the app is safe to use and will not harm your computer.
+
+### 🐧 Linux/Ubuntu
+
+> The standalone app can also be run on Linux systems using **[Wine](https://www.winehq.org/)**, a free and open-source compatibility layer that allows Windows applications to run on Unix-like operating systems without a full Windows installation.
+
+**1. Install Wine (if not already installed):**
+```bash
+sudo dpkg --add-architecture i386
+sudo apt update
+sudo apt install wine64 wine32
+```
+
+You can check Wine’s version after install:
+```bash
+wine --version
+```
+
+**2. Configure Wine (first run):**
+```bash
+winecfg
+```
+This will create Wine’s configuration folder, you can leave most settings as default.  
+
+
+**3. Run Your .exe Setup File:**
+Navigate to your `.exe` location:
+```bash
+cd /path/to/your/file
+wine AttendanceToolMSP_1.0.3_setup.exe
+```
+This should launch the Windows installer inside Ubuntu.
 
 ---
 
