@@ -145,6 +145,11 @@ def test_validate_university_id():
     assert Processor.validate_university_id("2021/00123") == "2021/00123"
     assert Processor.validate_university_id("2023/45678") == "2023/45678"
 
+    # Accept hyphen as separator and normalize to '/'
+    assert Processor.validate_university_id("2021-00123") == "2021/00123"
+    assert Processor.validate_university_id("2023-45678") == "2023/45678"
+    assert Processor.validate_university_id(" 2022-01234 ") == "2022/01234"
+
     # Auto-format 9-digit IDs
     assert Processor.validate_university_id("202100123") == "2021/00123"
     assert Processor.validate_university_id("202345678") == "2023/45678"
@@ -177,6 +182,24 @@ def test_validate_university_id():
 
     with raises(ValueError):
         Processor.validate_university_id("2021/123456")  # Number part too long
+
+    # Multiple hyphens or misplaced hyphens should raise
+    with raises(ValueError):
+        Processor.validate_university_id("2022--01234")  # double hyphen
+    with raises(ValueError):
+        Processor.validate_university_id("2022/-01234")  # slash and hyphen
+    with raises(ValueError):
+        Processor.validate_university_id("2022-0123-4")  # extra hyphen in number
+
+    # Hyphen in wrong position should raise
+    with raises(ValueError):
+        Processor.validate_university_id("-2022-01234")
+    with raises(ValueError):
+            Processor.validate_university_id("202201-234")
+
+    # Hyphen with spaces in between should raise
+    with raises(ValueError):
+        Processor.validate_university_id("2022 - 01234")
 
 
 def test_validate_course_code():
