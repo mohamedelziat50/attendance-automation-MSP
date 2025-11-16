@@ -51,6 +51,7 @@ Attendance data gathering for technical sessions at Misr International Universit
 - Accepting Google Forms CSV exports as input (see [CSV Format Requirements](#-csv-format-requirements) below; works with any CSV file containing the required headers; a [Google Forms Template is available here](https://docs.google.com/forms/d/19Yr79Zj9nwbu76-deXBJqYttGGCyzbok7AIZX19zFtM/template/preview))
 - Validating and normalizing data (course code, time, university ID, etc.)
 - Exporting formatted Word/PDF documents as required by the university
+	- *Note: If you need page numbers in exported Word documents, add them manually in Word: Insert → Page Number → Bottom of Page → Plain Number 2 (centered). This is due to a python-docx limitation.*
 - Handling edge cases and missing data with clear validation logs
 - Providing both CLI and GUI interfaces for flexibility (see [How It Looks: GUI, CLI & Documents](#how-it-looks-preview) below)
 - Designed for both developers (as a [PyPI package](https://pypi.org/project/attendance-tool-msp/), subsystem for MSP's website/system) and non-developers (standalone setup wizard; see [Standalone App Details](#-standalone-app-details) below)
