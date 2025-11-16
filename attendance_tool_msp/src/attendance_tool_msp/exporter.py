@@ -151,8 +151,8 @@ class Exporter:
 
         # Set page margins to 1 inch on all sides
         for section in document.sections:
-            section.top_margin = docx.shared.Inches(0.75)
-            section.bottom_margin = docx.shared.Inches(0.75)
+            section.top_margin = docx.shared.Inches(0.5)
+            section.bottom_margin = docx.shared.Inches(0.5)
             section.left_margin = docx.shared.Inches(0.5)
             section.right_margin = docx.shared.Inches(0.5)
 

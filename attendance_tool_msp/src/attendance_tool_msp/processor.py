@@ -227,10 +227,10 @@ class Processor:
                 "Name can only contain letters, spaces, hyphens, and apostrophes"
             )
 
-        # Check for reasonable number of words (1-5 typically for a full name)
+        # Check for reasonable number of words (1-6 typically for a full name)
         words = name.split()
-        if len(words) < 1 or len(words) > 5:
-            raise ValueError("Name should contain 1-5 words")
+        if len(words) < 1 or len(words) > 6:
+            raise ValueError("Name should contain 1-6 words")
 
         # Capitalize each word for consistent formatting
         name = name.title()
@@ -547,10 +547,10 @@ class Processor:
                 "Doctor/TA name can only contain letters, spaces, hyphens, apostrophes, periods, and parentheses"
             )
 
-        # Check for reasonable number of words (1-6 to allow for titles like "Dr. John Smith")
+        # Check for reasonable number of words (1-7 to allow for titles like "Dr. John Smith Ahmed Ali")
         words = name.split()
-        if len(words) < 1 or len(words) > 6:
-            raise ValueError("Doctor/TA name should contain 1-6 words")
+        if len(words) < 1 or len(words) > 7:
+            raise ValueError("Doctor/TA name should contain 1-7 words")
 
         # Normalize instructor title and auto-add "Dr." prefix if needed
         name = Processor.__normalize_instructor_title(name)
