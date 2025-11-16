@@ -275,11 +275,12 @@ class Processor:
     def validate_university_id(student_id):
         """
         Validates MIU student ID format (YYYY/XXXXX).
-        Auto-formats 9-digit IDs without slashes to YYYY/XXXXX format.
+        Accepts either '/' or '-' as the separator and normalizes the returned
+        Auto-formats 9-digit IDs without separators to YYYY/XXXXX format.
         Regular expressions are not used.
 
         Examples:
-            2023/00824, 2020/34125, 202306246 (auto-formatted to 2023/06246)
+            2023/00824, 2020-34125, 202306246 (auto-formatted to 2023/06246)
 
         Args:
             student_id (str): The student ID to validate
@@ -296,17 +297,27 @@ class Processor:
         # Remove extra whitespace
         student_id = student_id.strip()
 
-        # Auto-format if no slash but exactly 9 digits (YYYYXXXXX format)
-        if "/" not in student_id and student_id.isdigit() and len(student_id) == 9:
+        # Auto-format if no separator but exactly 9 digits (YYYYXXXXX format)
+        if (
+            "/" not in student_id
+            and "-" not in student_id
+            and student_id.isdigit()
+            and len(student_id) == 9
+        ):
             student_id = student_id[:4] + "/" + student_id[4:]
 
-        # Check if it contains exactly one forward slash
+        # Normalize hyphen separator to forward slash for consistent processing
+        if "-" in student_id:
+            # Replace any single or multiple hyphens with a single '/'
+            student_id = student_id.replace("-", "/")
+
+        # Check if it contains exactly one forward slash now
         if student_id.count("/") != 1:
             raise ValueError(
-                "Student ID must contain exactly one '/' separator or be 9 digits (YYYYXXXXX)"
+                "Student ID must contain exactly one '/' or '-' separator, or be 9 digits (YYYYXXXXX)"
             )
 
-        # Split by forward slash
+        # Split by forward slash (normalized separator)
         year_part, number_part = student_id.split("/")
 
         # Validate year part (4 digits)
