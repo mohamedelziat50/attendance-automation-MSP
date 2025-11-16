@@ -151,10 +151,10 @@ class Exporter:
 
         # Set page margins to 1 inch on all sides
         for section in document.sections:
-            section.top_margin = docx.shared.Inches(1)
-            section.bottom_margin = docx.shared.Inches(1)
-            section.left_margin = docx.shared.Inches(1)
-            section.right_margin = docx.shared.Inches(1)
+            section.top_margin = docx.shared.Inches(0.75)
+            section.bottom_margin = docx.shared.Inches(0.75)
+            section.left_margin = docx.shared.Inches(0.5)
+            section.right_margin = docx.shared.Inches(0.5)
 
         # Add and style document heading
         self.__add_document_heading(document)
@@ -257,7 +257,7 @@ class Exporter:
         # Style the heading
         heading_run = heading.runs[0]  # .runs[0] = first text chunk in the heading that we can style
         heading_run.font.name = "Arial"  # Change font family to Arial
-        heading_run.font.size = docx.shared.Pt(21)  # Set font size to 21 points
+        heading_run.font.size = docx.shared.Pt(18)  # Set font size to 21 points
         heading_run.font.color.rgb = docx.shared.RGBColor(
             0, 0, 0
         )  # Set text color to black
@@ -281,11 +281,11 @@ class Exporter:
 
         # Set column widths to prevent text wrapping
         column_widths = [
-            docx.shared.Inches(3.5),  # Name column - wider for long names
-            docx.shared.Inches(1.5),  # ID column
+            docx.shared.Inches(5.0),  # Name column - wider for long names
+            docx.shared.Inches(0.5),  # ID column
             docx.shared.Inches(2.0),  # Course Code column
-            docx.shared.Inches(3.5),  # Time column
-            docx.shared.Inches(3.0),  # Doctor/TA Name column
+            docx.shared.Inches(1.5),  # Time column
+            docx.shared.Inches(4.5),  # Doctor/TA Name column
         ]
 
         for i, width in enumerate(column_widths):
@@ -304,7 +304,7 @@ class Exporter:
             run = paragraph.add_run(col_name)
             run.font.bold = True
             run.font.name = "Roboto"
-            run.font.size = docx.shared.Pt(11.5)
+            run.font.size = docx.shared.Pt(8.5)
             # paragraph.alignment = docx.enum.text.WD_PARAGRAPH_ALIGNMENT.CENTER
 
         return table
@@ -336,7 +336,7 @@ class Exporter:
             for cell in cells:
                 for paragraph in cell.paragraphs:
                     for run in paragraph.runs:
-                        run.font.size = docx.shared.Pt(11.5)
+                        run.font.size = docx.shared.Pt(8.5)
                         run.font.name = "Roboto"
                         # Make invalid rows red
                         if not valid:
@@ -354,10 +354,10 @@ class Exporter:
         """
 
         # Specific Margin Sizes
-        top_margin = 150
-        right_margin = 360
-        bottom_margin = 360
-        left_margin = 150
+        top_margin = 75
+        right_margin = 150
+        bottom_margin = 200
+        left_margin = 75
 
         for cell in cells:
             cell_element = cell._element
